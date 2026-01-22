@@ -11,6 +11,7 @@ import plotly.graph_objects as go
 from collections import Counter
 import base64
 import random
+import re
 from pathlib import Path
 
 # ============================================================================
@@ -485,18 +486,23 @@ def get_restaurant_mentions(df):
     cat_cols = ['Mariscos', 'Carne', 'Hamburguesas', 'Pizzas', 'Sushi', 'Tacos', 
                 'Comida típica tabasqueña', 'Mexicana', 'Desayunos', 'Brunch', 
                 'Bar', 'Bufete', 'Está de moda', 'Ya no está de moda:', 'Celebraciones']
+    invalid_mentions = {
+        '1', 'No responde', 'No respondió', 'No respondio', 'No sé',
+        'No se', 'No', 'Ninguno', 'N/A', 'Na'
+    }
+    split_pattern = re.compile(r'\s*(?:/|,|;|\by\b|&|\+)\s*', re.IGNORECASE)
     
     all_mentions = []
     for col in rest_cols + cat_cols:
         if col in df.columns:
             vals = df[col].dropna().astype(str)
-            vals = vals[~vals.isin([
-                '1', 'No responde', 'No respondió', 'No respondio', 'No sé',
-                'No se', 'No', 'Ninguno', 'N/A', 'Na'
-            ])]
-            # Aplicar normalización
-            vals = vals.apply(normalize_restaurant_name)
-            all_mentions.extend(vals.tolist())
+            vals = vals[~vals.isin(list(invalid_mentions))]
+            for raw_val in vals.tolist():
+                parts = [p.strip() for p in split_pattern.split(str(raw_val)) if p and p.strip()]
+                for part in parts:
+                    if part in invalid_mentions:
+                        continue
+                    all_mentions.append(normalize_restaurant_name(part))
     
     return Counter(all_mentions)
 
@@ -590,6 +596,10 @@ def normalize_restaurant_name(name):
         'wingstop altabrisa': 'Wingstop',
         
         # Otros
+        'madison grill': 'Madison',
+        'madison/grill': 'Madison',
+        'leo restaurante': 'Leo',
+        'leo en tu casa': 'Leo',
         'salon caimito': 'Salón Caimito',
         'salón caimito': 'Salón Caimito',
         'a takear': 'A Takear',
@@ -678,6 +688,11 @@ def get_category_leaders(df):
     }
     
     leaders = {}
+    invalid_mentions = {
+        '1', 'No responde', 'No respondió', 'No respondio', 'No sé',
+        'No se', 'No', 'Ninguno', 'N/A', 'Na'
+    }
+    split_pattern = re.compile(r'\s*(?:/|,|;|\by\b|&|\+)\s*', re.IGNORECASE)
     for name, col in categories.items():
         if col in df.columns:
             vals = df[col].dropna().astype(str)
@@ -685,10 +700,15 @@ def get_category_leaders(df):
                 '1', 'No responde', 'No respondió', 'No respondio', 'No sé',
                 'No se', 'No', 'Ninguno', 'N/A', 'Na'
             ])]
-            # Normalizar nombres para evitar duplicados
-            vals = vals.apply(normalize_restaurant_name)
-            if len(vals) > 0:
-                counts = Counter(vals)
+            normalized_vals = []
+            for raw_val in vals.tolist():
+                parts = [p.strip() for p in split_pattern.split(str(raw_val)) if p and p.strip()]
+                for part in parts:
+                    if part in invalid_mentions:
+                        continue
+                    normalized_vals.append(normalize_restaurant_name(part))
+            if len(normalized_vals) > 0:
+                counts = Counter(normalized_vals)
                 if counts:
                     top = counts.most_common(5)
                     leaders[name] = top

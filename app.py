@@ -490,7 +490,10 @@ def get_restaurant_mentions(df):
     for col in rest_cols + cat_cols:
         if col in df.columns:
             vals = df[col].dropna().astype(str)
-            vals = vals[~vals.isin(['1', 'No responde', 'No sé', 'Ninguno', 'No se'])]
+            vals = vals[~vals.isin([
+                '1', 'No responde', 'No respondió', 'No respondio', 'No sé',
+                'No se', 'No', 'Ninguno', 'N/A', 'Na'
+            ])]
             # Aplicar normalización
             vals = vals.apply(normalize_restaurant_name)
             all_mentions.extend(vals.tolist())
@@ -559,6 +562,7 @@ def normalize_restaurant_name(name):
         
         # 7 Quince
         '7 quince': '7 Quince',
+        '7quince': '7 Quince',
         '7:quince': '7 Quince',
         '7/quince': '7 Quince',
         'siete quince': '7 Quince',
@@ -631,7 +635,10 @@ def get_category_leaders(df):
     for name, col in categories.items():
         if col in df.columns:
             vals = df[col].dropna().astype(str)
-            vals = vals[~vals.isin(['1', 'No responde', 'No sé', 'Ninguno', 'No se'])]
+            vals = vals[~vals.isin([
+                '1', 'No responde', 'No respondió', 'No respondio', 'No sé',
+                'No se', 'No', 'Ninguno', 'N/A', 'Na'
+            ])]
             # Normalizar nombres para evitar duplicados
             vals = vals.apply(normalize_restaurant_name)
             if len(vals) > 0:
@@ -661,6 +668,26 @@ def format_gmb_reviews(value):
         return f"{v:,}"
     except Exception:
         return "—"
+
+def parse_gmb_rating(value):
+    """Convierte rating a float seguro"""
+    try:
+        v = float(value)
+        if pd.isna(v):
+            return None
+        return v
+    except Exception:
+        return None
+
+def parse_gmb_reviews(value):
+    """Convierte reseñas a int seguro"""
+    try:
+        v = int(float(value))
+        if v < 0:
+            return None
+        return v
+    except Exception:
+        return None
 
 def match_gmb(restaurant_name, gmb_df):
     """Busca coincidencia en GMB con matching inteligente"""
@@ -1429,14 +1456,14 @@ elif selected_page == "✅ Validación GMB":
     for name, count in top_20:
         gmb_match = match_gmb(name, df_gmb)
         if gmb_match is not None:
-            rating = gmb_match['rating']
-            reviews = int(gmb_match['reviews'])
+            rating = parse_gmb_rating(gmb_match.get('rating'))
+            reviews = parse_gmb_reviews(gmb_match.get('reviews'))
             
-            if rating >= 4.5 and reviews >= 500:
+            if rating is not None and reviews is not None and rating >= 4.5 and reviews >= 500:
                 status = '✅ Validado'
-            elif rating >= 4.0:
+            elif rating is not None and rating >= 4.0:
                 status = '✅ OK'
-            elif reviews < 200:
+            elif reviews is not None and reviews < 200:
                 status = '⚠️ Pocas reseñas'
             else:
                 status = '⚠️ Revisar'
@@ -1448,8 +1475,8 @@ elif selected_page == "✅ Validación GMB":
         validation_data.append({
             'Restaurante': name,
             'Menciones': count,
-            'Rating GMB': rating,
-            'Reseñas': reviews,
+            'Rating GMB': format_gmb_rating(rating),
+            'Reseñas': format_gmb_reviews(reviews),
             'Estado': status
         })
     

@@ -423,7 +423,7 @@ def load_gmb():
 # FUNCIONES AUXILIARES
 # ============================================================================
 def get_restaurant_mentions(df):
-    """Obtiene conteo de menciones de restaurantes"""
+    """Obtiene conteo de menciones de restaurantes con normalización"""
     rest_cols = ['Restaurante_1', 'Restaurante_2', 'Restaurante_3', 'Restaurante_4', 'Restaurante_5']
     cat_cols = ['Mariscos', 'Carne', 'Hamburguesas', 'Pizzas', 'Sushi', 'Tacos', 
                 'Comida típica tabasqueña', 'Mexicana', 'Desayunos', 'Brunch', 
@@ -434,6 +434,8 @@ def get_restaurant_mentions(df):
         if col in df.columns:
             vals = df[col].dropna().astype(str)
             vals = vals[~vals.isin(['1', 'No responde', 'No sé', 'Ninguno', 'No se'])]
+            # Aplicar normalización
+            vals = vals.apply(normalize_restaurant_name)
             all_mentions.extend(vals.tolist())
     
     return Counter(all_mentions)
@@ -451,20 +453,105 @@ def normalize_restaurant_name(name):
     """Normaliza nombres de restaurantes para evitar duplicados"""
     if not isinstance(name, str):
         return name
-    # Convertir a título (primera letra mayúscula)
-    name = name.strip().title()
-    # Eliminar artículos y conectores duplicados
-    name = name.replace('  ', ' ')
-    # Normalizar variaciones comunes
-    replacements = {
-        'Pescados Y Mariscos': 'Pescados y Mariscos',
-        'El Reina': 'El Reyna',
-        'La Lupita Mariscos': 'La Lupita',
+    
+    # Limpiar espacios
+    name = name.strip()
+    if not name:
+        return name
+    
+    name_lower = name.lower()
+    
+    # Mapeo de variaciones a nombre canónico
+    normalizations = {
+        # Di Bari
+        'di bari': 'Di Bari',
+        'dibari': 'Di Bari',
+        'dibaris': 'Di Bari',
+        'd bari': 'Di Bari',
+        'dbari': 'Di Bari',
+        "di'bari": 'Di Bari',
+        'de bari': 'Di Bari',
+        'di baris': 'Di Bari',
+        
+        # Boston's
+        'bostons': "Boston's",
+        "boston's": "Boston's",
+        "boston's pizza": "Boston's",
+        'bostongs': "Boston's",
+        'bostoons': "Boston's",
+        'boston': "Boston's",
+        
+        # McDonald's
+        "mcdonald's": "McDonald's",
+        'mcdonalds': "McDonald's",
+        'mc donalds': "McDonald's",
+        'mc donald': "McDonald's",
+        'magdonald': "McDonald's",
+        'macdonald': "McDonald's",
+        
+        # Manila Garden
+        'manila': 'Manila Garden',
+        'manila garden': 'Manila Garden',
+        'manila carden': 'Manila Garden',
+        'centrico, manila': 'Manila Garden',
+        
+        # Groshi
+        'groshi': 'Groshi',
+        'groshi express': 'Groshi',
+        'groshi expres': 'Groshi',
+        
+        # 7 Quince
+        '7 quince': '7 Quince',
+        '7:quince': '7 Quince',
+        '7/quince': '7 Quince',
+        'siete quince': '7 Quince',
+        
+        # Sushi House
+        'sushi house': 'Sushi House',
+        
+        # Sushi Roll
+        'sushi roll': 'Sushi Roll',
+        'sushi and roll': 'Sushi Roll',
+        
+        # Carl's Jr
+        "carl's jr": "Carl's Jr",
+        'carls': "Carl's Jr",
+        'carl jr': "Carl's Jr",
+        "carl's jr": "Carl's Jr",
+        
+        # Wings - Son 3 restaurantes diferentes
+        'wings army': 'Wings Army',
+        'wingstop': 'Wingstop',
+        'wings bunker': 'Wings Bunker',
+        'wing stop': 'Wingstop',
+        'wingstop altabrisa': 'Wingstop',
+        
+        # Otros
+        'el reyna': 'El Reyna',
+        'la lupita': 'La Lupita',
+        'la lupita mariscos': 'La Lupita',
+        'bar la lupita': 'La Lupita',
+        'milagrito': 'Milagrito',
+        'fuego extremo': 'Fuego Extremo',
+        'fuego animal': 'Fuego Animal',
+        'el machetazo': 'El Machetazo',
+        'banquetacos': 'Banquetacos',
+        'tacos joven': 'Tacos Joven',
+        'sushito': 'Sushito',
+        'han sushi': 'Han Sushi',
     }
-    for old, new in replacements.items():
-        if old.lower() == name.lower():
-            name = new
-    return name
+    
+    # Buscar coincidencia exacta
+    if name_lower in normalizations:
+        return normalizations[name_lower]
+    
+    # Buscar coincidencia parcial para casos con texto adicional
+    for key, value in normalizations.items():
+        if name_lower.startswith(key) or key in name_lower:
+            return value
+    
+    # Si no hay coincidencia, convertir a título
+    return name.title()
 
 def get_category_leaders(df):
     """Obtiene líderes por categoría con normalización de nombres"""

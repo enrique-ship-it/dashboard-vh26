@@ -642,6 +642,26 @@ def get_category_leaders(df):
     
     return leaders
 
+def format_gmb_rating(value):
+    """Formatea rating de GMB con manejo seguro de nulos"""
+    try:
+        v = float(value)
+        if pd.isna(v):
+            return "—"
+        return f"⭐ {v:.1f}"
+    except Exception:
+        return "—"
+
+def format_gmb_reviews(value):
+    """Formatea reseñas de GMB con manejo seguro de nulos"""
+    try:
+        v = int(float(value))
+        if v < 0:
+            return "—"
+        return f"{v:,}"
+    except Exception:
+        return "—"
+
 def match_gmb(restaurant_name, gmb_df):
     """Busca coincidencia en GMB con matching inteligente"""
     if not restaurant_name or len(restaurant_name) < 2:
@@ -1374,8 +1394,8 @@ elif selected_page == "🔬 Análisis Detallado":
                         table_data.append({
                             "Restaurante": name,
                             "Menciones": count,
-                            "Rating GMB": f"⭐ {gmb_match['rating']}",
-                            "Reseñas": f"{int(gmb_match['reviews']):,}"
+                            "Rating GMB": format_gmb_rating(gmb_match.get('rating')),
+                            "Reseñas": format_gmb_reviews(gmb_match.get('reviews'))
                         })
                     else:
                         table_data.append({

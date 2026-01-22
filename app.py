@@ -14,6 +14,44 @@ import random
 from pathlib import Path
 
 # ============================================================================
+# AUTENTICACIÓN SIMPLE
+# ============================================================================
+def check_auth():
+    """Verificar autenticación del usuario"""
+    if 'authenticated' not in st.session_state:
+        st.session_state.authenticated = False
+    
+    if not st.session_state.authenticated:
+        st.set_page_config(
+            page_title="Login - Dashboard VH26",
+            page_icon="🔐",
+            layout="centered"
+        )
+        
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            st.markdown("""
+            <div style='text-align: center; padding: 40px 0;'>
+                <h1>🔐 Consumer Insights Dashboard</h1>
+                <p style='color: #666; font-size: 16px;'>VH26 - Villahermosa</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            password = st.text_input("🔑 Contraseña:", type="password", placeholder="Ingresa la contraseña")
+            
+            if st.button("Acceder", use_container_width=True, type="primary"):
+                if password == "admin123":
+                    st.session_state.authenticated = True
+                    st.rerun()
+                else:
+                    st.error("❌ Contraseña incorrecta")
+        
+        st.stop()
+
+# Ejecutar verificación de autenticación
+check_auth()
+
+# ============================================================================
 # CONFIGURACIÓN INICIAL
 # ============================================================================
 st.set_page_config(

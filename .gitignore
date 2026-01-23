@@ -18,3 +18,8 @@ Thumbs.db
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Environment variables
+.env
+.env.local
+.env.production

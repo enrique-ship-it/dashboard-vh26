@@ -61,7 +61,9 @@ def check_auth():
             password = st.text_input("Contraseña:", type="password", placeholder="Ingresa la contraseña")
             
             if st.button("Acceder", use_container_width=True, type="primary"):
-                if password == "admin123":
+                # Usar variable de entorno para mayor seguridad
+                valid_password = os.environ.get("DASHBOARD_PASSWORD", "admin123")
+                if password == valid_password:
                     st.session_state.authenticated = True
                     st.rerun()
                 else:

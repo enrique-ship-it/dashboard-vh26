@@ -279,222 +279,84 @@ CSS_STYLES = """
         width: 100% !important;
     }
     
-    /* LIQUID GLASS CARDS - Estilo vidrio polarizado translúcido */
+    /* CARDS LIMPIAS */
     .glass-card {
-        background: linear-gradient(135deg, 
-            rgba(255,255,255,0.45) 0%, 
-            rgba(0,0,0,0.08) 50%,
-            rgba(255,255,255,0.40) 100%);
-        backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
-        -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
-        border-radius: 24px;
-        border: none;
-        padding: 24px 26px;
+        background: rgba(255, 255, 255, 0.85);
+        border-radius: 20px;
+        border: 1px solid rgba(219, 39, 119, 0.12);
+        padding: 24px;
         margin: 12px 0;
-        box-shadow: 
-            0 8px 32px rgba(0, 0, 0, 0.15),
-            0 2px 8px rgba(0, 0, 0, 0.08),
-            inset 2px 2px 6px rgba(255, 255, 255, 0.7),
-            inset -2px -2px 6px rgba(0, 0, 0, 0.15),
-            inset -1px -1px 2px rgba(255, 255, 255, 0.5);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-        animation: fadeInUp 0.6s ease-out;
-    }
-    
-    .glass-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
-        opacity: 0.6;
-    }
-    
-    .glass-card::after {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.12) 50%, transparent 60%);
-        animation: shimmer 6s infinite;
-        pointer-events: none;
+        box-shadow: 0 4px 24px rgba(219, 39, 119, 0.08);
+        transition: all 0.3s ease;
     }
     
     .glass-card:hover {
-        transform: translateY(-6px) scale(1.01);
-        background: linear-gradient(135deg, 
-            rgba(255,255,255,0.55) 0%, 
-            rgba(0,0,0,0.05) 50%,
-            rgba(255,255,255,0.50) 100%);
-        box-shadow: 
-            0 16px 48px rgba(0, 0, 0, 0.20),
-            0 4px 12px rgba(0, 0, 0, 0.10),
-            inset 0 1px 0 rgba(255, 255, 255, 0.7),
-            inset 0 -1px 1px rgba(0, 0, 0, 0.12);
-        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(219, 39, 119, 0.12);
+        border-color: rgba(219, 39, 119, 0.2);
     }
     
-    /* KPI CARDS - Liquid Glass Premium (sin movimiento) */
     .kpi-card {
-        background: linear-gradient(135deg, 
-            rgba(255,255,255,0.35) 0%, 
-            rgba(0,0,0,0.05) 50%,
-            rgba(255,255,255,0.30) 100%);
-        backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
-        -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
-        border-radius: 28px;
-        border: none;
-        padding: 32px 28px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(252,231,243,0.9) 100%);
+        border-radius: 20px;
+        border: 1px solid rgba(219, 39, 119, 0.15);
+        padding: 24px;
         text-align: center;
-        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 
-            0 10px 40px rgba(0, 0, 0, 0.08),
-            0 4px 12px rgba(0, 0, 0, 0.05),
-            inset 2px 2px 6px rgba(255, 255, 255, 0.7),
-            inset -2px -2px 6px rgba(0, 0, 0, 0.15),
-            inset -1px -1px 2px rgba(255, 255, 255, 0.5);
-        min-height: 160px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(219, 39, 119, 0.08);
+        min-height: 140px;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        position: relative;
-        overflow: hidden;
-        animation: fadeInUp 0.6s ease-out;
     }
     
-    .kpi-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, transparent, rgba(219, 39, 119, 0.4), transparent);
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    
-    .kpi-card::after {
-        transform: translateY(-6px) scale(1.01);
-        position: absolute;
-            rgba(255,255,255,0.55) 0%, 
-            rgba(0,0,0,0.05) 50%,
-            rgba(255,255,255,0.50) 100%);
-        height: 200%;
-            0 16px 48px rgba(0, 0, 0, 0.20),
-            0 4px 12px rgba(0, 0, 0, 0.10),
-            inset 0 1px 0 rgba(255, 255, 255, 0.7),
-            inset 0 -1px 1px rgba(0, 0, 0, 0.12);
     .kpi-card:hover {
-        transform: translateY(-8px) scale(1.03);
-        box-shadow: 
-            0 20px 60px rgba(219, 39, 119, 0.25),
-            0 8px 16px rgba(0, 0, 0, 0.08),
-            inset 0 2px 4px rgba(255, 255, 255, 1),
-            inset 0 -2px 4px rgba(219, 39, 119, 0.12);
-        border-color: rgba(219, 39, 119, 0.4);
-    }
-    
-    .kpi-card:hover::before {
-        opacity: 1;
+        transform: scale(1.02);
+        box-shadow: 0 8px 30px rgba(219, 39, 119, 0.15);
     }
     
     .kpi-value {
-        font-size: 2.8rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #db2777 0%, #9333ea 50%, #db2777 100%);
-        background-size: 200% auto;
+        font-size: 2.2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #db2777 0%, #9333ea 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        animation: shimmer 5s linear infinite;
-        letter-spacing: -1.5px;
-        text-shadow: 0 2px 10px rgba(219, 39, 119, 0.1);
     }
     
     .kpi-label {
         color: #6b7280;
         font-size: 0.9rem;
-        font-weight: 600;
-        margin-top: 12px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        font-weight: 500;
+        margin-top: 8px;
     }
     
-    
-    /* TÍTULOS CON EFECTO LIQUID */
     .main-title {
         font-size: 2.2rem;
-        font-weight: 800;
-        color: #1f2937;
+        font-weight: 700;
+        background: linear-gradient(135deg, #1f2937 0%, #db2777 50%, #9333ea 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
         text-align: center;
-        margin: 0 auto 16px auto;
-        padding: 18px 28px;
-        max-width: 720px;
-        background: linear-gradient(135deg, 
-            rgba(255,255,255,0.45) 0%, 
-            rgba(0,0,0,0.06) 50%,
-            rgba(255,255,255,0.40) 100%);
-        backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
-        -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
-        border-radius: 28px;
-        box-shadow:
-            0 10px 30px rgba(0, 0, 0, 0.10),
-            0 4px 12px rgba(0, 0, 0, 0.06),
-            inset 2px 2px 6px rgba(255, 255, 255, 0.7),
-            inset -2px -2px 6px rgba(0, 0, 0, 0.12);
-        letter-spacing: -0.5px;
+        margin-bottom: 4px;
     }
     
     .subtitle {
         color: #6b7280;
         text-align: center;
-        font-size: 1.1rem;
-        margin-bottom: 42px;
+        font-size: 1rem;
+        margin-bottom: 32px;
         font-weight: 400;
-        letter-spacing: 0.5px;
-        opacity: 0.9;
     }
     
-    /* SECTION TITLE - Vidrio polarizado translúcido */
     .section-title {
-        font-size: 1.4rem;
-        font-weight: 700;
+        font-size: 1.3rem;
+        font-weight: 600;
         color: #1f2937;
-        margin: 48px 0 24px 0;
-        padding: 16px 22px;
-        background: linear-gradient(135deg, 
-            rgba(255,255,255,0.40) 0%, 
-            rgba(0,0,0,0.06) 40%,
-            rgba(255,255,255,0.35) 100%);
-        backdrop-filter: blur(35px) saturate(180%) brightness(1.1);
-        -webkit-backdrop-filter: blur(35px) saturate(180%) brightness(1.1);
-        border-radius: 28px;
-        position: relative;
-        box-shadow: 
-            0 6px 24px rgba(0, 0, 0, 0.12),
-            0 2px 8px rgba(0, 0, 0, 0.08),
-            inset 2px 2px 5px rgba(255, 255, 255, 0.65),
-            inset -2px -2px 5px rgba(0, 0, 0, 0.12),
-            inset -1px -1px 2px rgba(255, 255, 255, 0.4);
-        animation: fadeInUp 0.5s ease-out;
-    }
-    
-    .section-title::after {
-        content: '';
-        position: absolute;
-        bottom: -1px;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, rgba(219, 39, 119, 0.3), transparent);
-        opacity: 0.5;
+        margin: 28px 0 16px 0;
+        padding-left: 14px;
+        border-left: 4px solid #db2777;
     }
     
     

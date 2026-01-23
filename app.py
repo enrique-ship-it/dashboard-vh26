@@ -2299,17 +2299,6 @@ elif selected_page == "🌐 Ranking Google":
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # ==========================================================================
-    # FILTROS EN PANEL PRINCIPAL (siempre visibles)
-    # ==========================================================================
-    with st.expander("🎯 Filtros", expanded=False):
-        st.caption("Puedes seleccionar varios valores por filtro")
-        filter_edad, filter_zona, filter_gasto, filter_freq, active_filters = render_filters()
-
-    # ==========================================================================
-    # APLICAR FILTROS (MULTI-SELECT)
-    # ==========================================================================
-    
     # Obtener menciones de la encuesta
     mentions = get_restaurant_mentions(df_filtered)
     mentioned_names = set([name.lower() for name in mentions.keys()])

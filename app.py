@@ -450,6 +450,13 @@ CSS_STYLES = """
 
 st.markdown(CSS_STYLES, unsafe_allow_html=True)
 
+# Botón de limpieza de caché (parte superior)
+col_cache_left, col_cache_right = st.columns([6, 1])
+with col_cache_right:
+    if st.button("Limpiar caché", use_container_width=True):
+        st.cache_data.clear()
+        st.rerun()
+
 # Aplicar fondo si existe
 if bg_base64:
     st.markdown(f"""
@@ -612,8 +619,10 @@ def normalize_restaurant_name(name):
         'wingstop altabrisa': 'Wingstop',
         
         # Otros
-        'madison grill': 'Madison',
-        'madison/grill': 'Madison',
+        'madison': 'Madison Grill',
+        'madisson': 'Madison Grill',
+        'madison grill': 'Madison Grill',
+        'madison/grill': 'Madison Grill',
         'leo restaurante': 'Leo',
         'leo en tu casa': 'Leo',
         'salon caimito': 'Salón Caimito',

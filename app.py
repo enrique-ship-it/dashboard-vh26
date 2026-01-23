@@ -168,14 +168,26 @@ CSS_STYLES = """
     }
     
     [data-testid="stSidebar"] .stSelectbox label,
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        transform: none !important;
+        min-width: 20rem !important;
+        max-width: 20rem !important;
+        width: 20rem !important;
     [data-testid="stSidebar"] .stMultiSelect label {
 
     /* Forzar sidebar visible aunque esté colapsado */
     [data-testid="stSidebar"][aria-expanded="false"] {
         transform: translateX(0) !important;
         visibility: visible !important;
+        opacity: 1 !important;
         min-width: 20rem !important;
         max-width: 20rem !important;
+        width: 20rem !important;
+    }
+
+    [data-testid="stSidebar"] > div {
         width: 20rem !important;
     }
         color: #6b7280 !important;

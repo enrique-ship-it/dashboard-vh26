@@ -151,21 +151,27 @@ CSS_STYLES = """
         max-width: 320px !important;
     }
 
-    /* Ocultar botón de colapsar/mostrar sidebar */
-    button[data-testid="collapsedControl"] {
-        display: none !important;
-    }
-
-    /* Ocultar contenedor/ghost del toggle de sidebar que Streamlit genera */
+    /* Ocultar botón de colapsar/mostrar sidebar - cobertura exhaustiva */
+    button[data-testid="collapsedControl"],
+    button[kind="header"],
+    button[class*="baseButton"][kind="header"],
     div[title="Toggle sidebar"],
     button[title="Toggle sidebar"],
     div[aria-label="Toggle sidebar"],
     button[aria-label="Toggle sidebar"],
-    [data-testid="collapsedControl"] {
+    [data-testid="collapsedControl"],
+    button[class*="collapsedControl"],
+    .css-1544g2n,
+    .st-emotion-cache-1inwz65,
+    button[class*="st-emotion-cache"] {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
         pointer-events: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        position: absolute !important;
+        left: -9999px !important;
     }
 
     /* Ocultar cualquier heading residual "SIDEBAR VISIBLE" que haya quedado en caché */
@@ -191,9 +197,10 @@ CSS_STYLES = """
 
     .main .block-container {
         margin-top: 0 !important;
-        padding-top: 0 !important;
-        padding-left: 340px !important;
-        padding-right: 1.5rem !important;
+        padding-top: 0.5rem !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        max-width: 100% !important;
     }
     
     /* Glass Card mejorada con inner glow */

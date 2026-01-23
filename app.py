@@ -1819,8 +1819,45 @@ elif selected_page == "🌐 Ranking Google":
         st.markdown('<div class="section-title">🌐 Ranking Google My Business</div>', unsafe_allow_html=True)
         st.caption("Los mejor calificados según Google Maps")
     
-    # Filtrar restaurantes válidos (con rating y reseñas)
+    # Filtrar restaurantes válidos (con rating y reseñas, SOLO de Villahermosa, SOLO restaurantes)
     df_gmb_valid = df_gmb[df_gmb['rating'].notna() & df_gmb['reviews'].notna()].copy()
+    
+    # Filtrar SOLO Villahermosa (excluir CDMX, Veracruz, Chihuahua, etc.)
+    exclude_cities = ['cdmx', 'ciudad de méxico', 'cuauhtémoc', 'benito juárez', 'del valle', 
+                      'chihuahua', 'veracruz', 'ver.', 'chih.', 'camp.', 'carmen', 'oaxaca']
+    villahermosa_keywords = ['villahermosa', 'tab.', 'tabasco']
+    
+    def is_villahermosa(address):
+        if pd.isna(address):
+            return False
+        addr_lower = str(address).lower()
+        for kw in exclude_cities:
+            if kw in addr_lower:
+                return False
+        for kw in villahermosa_keywords:
+            if kw in addr_lower:
+                return True
+        return False
+    
+    # Filtrar NO restaurantes (plazas, tiendas, hoteles, etc.)
+    exclude_names = ['plaza altabrisa', 'plaza sendero', 'liverpool', 'mercado publico', 
+                     'mercado la sierra', 'home depot', 'walmart', 'soriana', 'chedraui',
+                     "sam's club", 'costco', 'office depot', 'hyatt', 'marriott', 'holiday inn',
+                     'fiesta inn', 'hotel', 'motel', 'gasolinera', 'oxxo']
+    
+    def is_restaurant(name):
+        if pd.isna(name):
+            return False
+        name_lower = str(name).lower()
+        for kw in exclude_names:
+            if kw in name_lower:
+                return False
+        return True
+    
+    df_gmb_valid = df_gmb_valid[
+        df_gmb_valid['address'].apply(is_villahermosa) & 
+        df_gmb_valid['name'].apply(is_restaurant)
+    ]
     
     # KPIs de Google
     col1, col2, col3, col4 = st.columns(4)

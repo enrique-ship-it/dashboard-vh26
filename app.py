@@ -896,7 +896,7 @@ with st.sidebar:
     
     # Filtro Edad - MULTISELECT
     if col_edad in df_encuestas.columns:
-        edad_options = sorted([x for x in df_encuestas[col_edad].dropna().unique() if x != 'No responde'])
+        edad_options = sorted([x for x in df_encuestas[col_edad].dropna().unique() if x not in ['No responde', 'No Respondió', 'No Respondio']])
         filter_edad = st.multiselect(
             "📅 Rango de edad",
             edad_options,
@@ -909,7 +909,7 @@ with st.sidebar:
     
     # Filtro Zona - MULTISELECT
     if col_zona in df_encuestas.columns:
-        zona_options = sorted([x for x in df_encuestas[col_zona].dropna().unique() if x != 'No responde'])
+        zona_options = sorted([x for x in df_encuestas[col_zona].dropna().unique() if x not in ['No responde', 'No Respondió', 'No Respondio']])
         filter_zona = st.multiselect(
             "📍 Zona",
             zona_options,
@@ -924,7 +924,7 @@ with st.sidebar:
     if col_gasto in df_encuestas.columns:
         # Orden lógico de gasto
         gasto_orden = ['Menos de $200', '$200 – $350', '$350 – $500', '$500 – $700', 'Más de $700']
-        gasto_disponibles = [x for x in df_encuestas[col_gasto].dropna().unique() if x != 'No responde']
+        gasto_disponibles = [x for x in df_encuestas[col_gasto].dropna().unique() if x not in ['No responde', 'No Respondió', 'No Respondio']]
         # Mantener solo los que existen en el dataset, en el orden correcto
         gasto_options = [g for g in gasto_orden if g in gasto_disponibles]
         filter_gasto = st.multiselect(
@@ -941,7 +941,7 @@ with st.sidebar:
     if col_freq in df_encuestas.columns:
         # Orden lógico de frecuencia
         freq_orden = ['Varias veces por semana', '1 vez por semana', '2–3 veces al mes', '1 vez al mes', 'Casi nunca']
-        freq_disponibles = [x for x in df_encuestas[col_freq].dropna().unique() if x != 'No responde']
+        freq_disponibles = [x for x in df_encuestas[col_freq].dropna().unique() if x not in ['No responde', 'No Respondió', 'No Respondio']]
         freq_options = [f for f in freq_orden if f in freq_disponibles]
         filter_freq = st.multiselect(
             "🔄 Frecuencia",
@@ -1172,7 +1172,7 @@ if selected_page == "📈 Resumen Ejecutivo":
         col_falta = "11. ¿Qué tipo de restaurante o experiencia consideras que hacen falta o están poco desarrollados en Villahermosa?"
         if col_falta in df_filtered.columns:
             falta_data = df_filtered[col_falta].dropna().astype(str)
-            falta_data = falta_data[~falta_data.isin(['No responde', 'No sé', 'Ninguno', 'No'])]
+            falta_data = falta_data[~falta_data.isin(['No responde', 'No Respondió', 'No Respondio', 'No sé', 'Ninguno', 'No'])]
             if len(falta_data) > 0:
                 falta_counts = Counter(falta_data)
                 top_falta = falta_counts.most_common(3)
@@ -1250,7 +1250,7 @@ elif selected_page == "👥 Perfil del Consumidor":
     with col1:
         if col_edad in df_filtered.columns:
             edad_counts = df_filtered[col_edad].value_counts()
-            edad_counts = edad_counts[edad_counts.index != 'No responde']
+            edad_counts = edad_counts[~edad_counts.index.isin(['No responde', 'No Respondió', 'No Respondio'])]
             
             fig = px.pie(
                 values=edad_counts.values,
@@ -1270,7 +1270,7 @@ elif selected_page == "👥 Perfil del Consumidor":
     with col2:
         if col_gasto in df_filtered.columns:
             gasto_counts = df_filtered[col_gasto].value_counts()
-            gasto_counts = gasto_counts[gasto_counts.index != 'No responde']
+            gasto_counts = gasto_counts[~gasto_counts.index.isin(['No responde', 'No Respondió', 'No Respondio'])]
             
             fig = px.pie(
                 values=gasto_counts.values,
@@ -1293,8 +1293,8 @@ elif selected_page == "👥 Perfil del Consumidor":
     
     if col_edad in df_filtered.columns and col_gasto in df_filtered.columns:
         cross_tab = pd.crosstab(df_filtered[col_edad], df_filtered[col_gasto])
-        cross_tab = cross_tab.drop('No responde', errors='ignore')
-        cross_tab = cross_tab.drop('No responde', axis=1, errors='ignore')
+        cross_tab = cross_tab.drop(['No responde', 'No Respondió', 'No Respondio'], errors='ignore')
+        cross_tab = cross_tab.drop(['No responde', 'No Respondió', 'No Respondio'], axis=1, errors='ignore')
         
         fig = px.imshow(
             cross_tab,
@@ -1318,7 +1318,7 @@ elif selected_page == "👥 Perfil del Consumidor":
     
     if col_zona in df_filtered.columns:
         zona_counts = df_filtered[col_zona].value_counts().head(10)
-        zona_counts = zona_counts[zona_counts.index != 'No responde']
+        zona_counts = zona_counts[~zona_counts.index.isin(['No responde', 'No Respondió', 'No Respondio'])]
         
         fig = px.bar(
             x=zona_counts.values,
@@ -1424,7 +1424,7 @@ elif selected_page == "🔬 Análisis Detallado":
         with tabs[idx]:
             if selected_cat in df_filtered.columns:
                 vals = df_filtered[selected_cat].dropna().astype(str)
-                vals = vals[~vals.isin(['1', 'No responde', 'No sé', 'Ninguno', 'No se', 'No'])]
+                vals = vals[~vals.isin(['1', 'No responde', 'No Respondió', 'No Respondio', 'No sé', 'Ninguno', 'No se', 'No'])]
                 # Normalizar nombres
                 vals = vals.apply(normalize_restaurant_name)
                 counts = Counter(vals)
@@ -1681,12 +1681,12 @@ elif selected_page == "📊 Tendencias":
     
     if col_moda in df_filtered.columns:
         vals = df_filtered[col_moda].dropna().astype(str)
-        vals = vals[~vals.isin(['1', 'No responde', 'No sé', 'Ninguno', 'No se'])]
+        vals = vals[~vals.isin(['1', 'No responde', 'No Respondió', 'No Respondio', 'No sé', 'Ninguno', 'No se'])]
         moda_data = Counter(vals).most_common(10)
     
     if col_decline in df_filtered.columns:
         vals = df_filtered[col_decline].dropna().astype(str)
-        vals = vals[~vals.isin(['1', 'No responde', 'No sé', 'Ninguno', 'No se'])]
+        vals = vals[~vals.isin(['1', 'No responde', 'No Respondió', 'No Respondio', 'No sé', 'Ninguno', 'No se'])]
         decline_data = Counter(vals).most_common(10)
     
     col1, col2 = st.columns(2)
@@ -1793,7 +1793,7 @@ elif selected_page == "💬 Voz del Cliente":
         
         if col_falta in df_filtered.columns:
             resp = df_filtered[col_falta].dropna()
-            resp = resp[~resp.isin(['1', 'No responde', 'No sé', 'Ninguno', 'ninguno', 'no', 'No', 'Nada'])]
+            resp = resp[~resp.isin(['1', 'No responde', 'No Respondió', 'No Respondio', 'No sé', 'Ninguno', 'ninguno', 'no', 'No', 'Nada'])]
             
             if len(resp) == 0:
                 st.warning("🔍 No hay respuestas disponibles con los filtros seleccionados. Prueba ampliando tu selección.")
@@ -1857,7 +1857,7 @@ elif selected_page == "💬 Voz del Cliente":
         col_edad = "2. ¿Qué edad tienes?"
         
         # Filtrar comentarios válidos
-        invalid_responses = ["no responde", "ninguno", "no", "x", ".", "-", "1", "na", "n/a", "nada", "ninguna"]
+        invalid_responses = ["no responde", "no respondió", "no respondio", "ninguno", "no", "x", ".", "-", "1", "na", "n/a", "nada", "ninguna"]
         
         df_comments = df_filtered[[col_comentarios, col_edad]].copy()
         df_comments = df_comments.dropna(subset=[col_comentarios])
@@ -1929,7 +1929,7 @@ elif selected_page == "💬 Voz del Cliente":
         for resp in df_filtered[col_no_regresar].dropna():
             for item in str(resp).split(","):
                 item = item.strip()
-                if item and item != "No responde":
+                if item and item not in ["No responde", "No Respondió", "No Respondio"]:
                     # Normalizar nombres
                     for key in pain_map.keys():
                         if key.lower() in item.lower() or item.lower() in key.lower():

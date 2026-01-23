@@ -193,10 +193,16 @@ CSS_STYLES = """
         width: 20rem !important;
     }
     
-    /* Botón de colapsar sidebar */
+    /* Botón de colapsar sidebar - OCULTO */
     [data-testid="collapsedControl"] {
-        display: flex !important;
-        visibility: visible !important;
+        display: none !important;
+        visibility: hidden !important;
+    }
+    
+    /* Sidebar siempre fijo, no colapsable */
+    [data-testid="stSidebar"] {
+        position: fixed !important;
+        left: 0 !important;
     }
     
     /* Glass Card mejorada con inner glow */

@@ -159,6 +159,8 @@ CSS_STYLES = """
     /* Ocultar contenedor/ghost del toggle de sidebar que Streamlit genera */
     div[title="Toggle sidebar"],
     button[title="Toggle sidebar"],
+    div[aria-label="Toggle sidebar"],
+    button[aria-label="Toggle sidebar"],
     [data-testid="collapsedControl"] {
         display: none !important;
         visibility: hidden !important;
@@ -171,7 +173,17 @@ CSS_STYLES = """
         display: none !important;
     }
 
-    /* Dejar espacio al contenido principal cuando el sidebar está visible */
+    /* Reducir padding interno superior del sidebar */
+    section[data-testid="stSidebar"] > div:first-child {
+        padding-top: 0.25rem !important;
+    }
+
+    /* Dejar espacio al contenido principal cuando el sidebar está visible y sin gap superior */
+    [data-testid="stAppViewContainer"] {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+
     [data-testid="stAppViewContainer"] > .main {
         padding-top: 0 !important;
         margin-top: 0 !important;

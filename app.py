@@ -151,8 +151,19 @@ CSS_STYLES = """
         max-width: 320px !important;
     }
 
+    /* Ocultar botón de colapsar/mostrar sidebar */
+    button[data-testid="collapsedControl"] {
+        display: none !important;
+    }
+
+    /* Ocultar cualquier heading residual "SIDEBAR VISIBLE" que haya quedado en caché */
+    section[data-testid="stSidebar"] h3 {
+        display: none !important;
+    }
+
     /* Dejar espacio al contenido principal cuando el sidebar está visible */
     .main .block-container {
+        padding-top: 1rem !important;
         padding-left: 340px !important;
         padding-right: 1.5rem !important;
     }
@@ -623,6 +634,33 @@ CSS_STYLES = """
 """
 
 st.markdown(CSS_STYLES, unsafe_allow_html=True)
+
+# Ocultar cualquier heading residual "SIDEBAR VISIBLE" que haya quedado en caché/DOM
+HIDE_SIDEBAR_LABEL_JS = """
+<script>
+(() => {
+    const hideLabel = () => {
+        const sidebar = window.parent.document.querySelector('section[data-testid="stSidebar"]');
+        if (!sidebar) return;
+        const nodes = sidebar.querySelectorAll('h1, h2, h3, h4, p, div');
+        nodes.forEach(el => {
+            const text = (el.textContent || '').trim().toLowerCase();
+            if (text.includes('sidebar visible')) {
+                el.style.display = 'none';
+            }
+        });
+    };
+    hideLabel();
+    const target = window.parent.document.querySelector('section[data-testid="stSidebar"]');
+    if (target) {
+        const obs = new MutationObserver(() => hideLabel());
+        obs.observe(target, { childList: true, subtree: true });
+    }
+})();
+</script>
+"""
+
+st.markdown(HIDE_SIDEBAR_LABEL_JS, unsafe_allow_html=True)
 
 # Aplicar fondo con overlay para mejor contraste
 if bg_base64:
@@ -1162,9 +1200,41 @@ def get_image_base64(image_path):
         return base64.b64encode(img_file.read()).decode()
 
 with st.sidebar:
-    # Test simple
-    st.write("### SIDEBAR VISIBLE")
-    
+    # Sanitizar: eliminar cualquier heading residual "SIDEBAR VISIBLE" que persista en el DOM
+    st.markdown(
+        """
+        <script>
+        (() => {
+            const killLabel = () => {
+                const sidebar = document.querySelector('section[data-testid="stSidebar"]');
+                if (!sidebar) return;
+                const nodes = sidebar.querySelectorAll('h1, h2, h3, h4, h5, h6, p, div, span');
+                nodes.forEach(el => {
+                    const text = (el.textContent || '').trim().toLowerCase();
+                    if (text.includes('sidebar visible')) {
+                        el.remove();
+                    }
+                });
+            };
+            const run = () => {
+                killLabel();
+                const target = document.querySelector('section[data-testid="stSidebar"]');
+                if (target) {
+                    const obs = new MutationObserver(killLabel);
+                    obs.observe(target, { childList: true, subtree: true });
+                }
+            };
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', run);
+            } else {
+                run();
+            }
+        })();
+        </script>
+        """,
+        unsafe_allow_html=True,
+    )
+
     # Logo NO ROBOT compacto
     logo_path = Path(__file__).parent / "assets" / "logo.png"
     if logo_path.exists():

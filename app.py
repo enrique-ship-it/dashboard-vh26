@@ -140,9 +140,27 @@ CSS_STYLES = """
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
     
-    /* ===== SIDEBAR ===== */
+    /* ===== SIDEBAR REHABILITADO ===== */
     section[data-testid="stSidebar"] {
         background: linear-gradient(180deg, #ffffff 0%, #fdf2f8 100%) !important;
+        border-right: 1px solid rgba(219, 39, 119, 0.12) !important;
+        width: 320px !important;
+        min-width: 320px !important;
+        max-width: 320px !important;
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        height: 100vh !important;
+        overflow-y: auto !important;
+        padding: 1.5rem 1rem !important;
+        box-shadow: 4px 0 16px rgba(219, 39, 119, 0.08) !important;
+        z-index: 100 !important;
+    }
+
+    /* Ajustar el contenedor principal para dejar espacio al sidebar fijo */
+    .main .block-container {
+        padding-left: 340px !important;
+        padding-right: 2rem !important;
     }
     
     /* Glass Card mejorada con inner glow */

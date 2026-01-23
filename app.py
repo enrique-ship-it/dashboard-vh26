@@ -1401,6 +1401,13 @@ with st.sidebar:
     
     st.markdown("---")
     
+    # FILTROS EN SIDEBAR
+    st.markdown("#### 🎯 Filtros")
+    st.caption("Puedes seleccionar varios valores por filtro")
+    filter_edad, filter_zona, filter_gasto, filter_freq, active_filters = render_filters()
+    
+    st.markdown("---")
+    
     # Info del dataset
     st.markdown("#### 📊 Sobre los datos")
     st.markdown(f"""
@@ -1432,29 +1439,6 @@ st.markdown("""
 <div class="main-title">Consumer Insights Dashboard</div>
 <div class="subtitle">Estudio del mercado gastronómico en Villahermosa · Enero 2026</div>
 """, unsafe_allow_html=True)
-
-# ============================================================================
-# PANEL PRINCIPAL - FILTROS (EXPANDER DESTACADO)
-# ============================================================================
-st.markdown("""
-<style>
-    /* Hacer el expander de filtros más visible */
-    div[data-testid="stExpander"] {
-        background: linear-gradient(135deg, rgba(219, 39, 119, 0.08) 0%, rgba(147, 51, 234, 0.05) 100%) !important;
-        border: 2px solid rgba(219, 39, 119, 0.25) !important;
-        border-radius: 16px !important;
-        margin-bottom: 20px !important;
-    }
-    div[data-testid="stExpander"] summary {
-        font-weight: 600 !important;
-        color: #db2777 !important;
-    }
-</style>
-""", unsafe_allow_html=True)
-
-with st.expander("🎯 **FILTROS** - Haz clic aquí para filtrar por edad, zona, gasto y frecuencia", expanded=False):
-    st.markdown("##### Selecciona los filtros que desees aplicar:")
-    filter_edad, filter_zona, filter_gasto, filter_freq, active_filters = render_filters()
 
 # ============================================================================
 # APLICAR FILTROS (MULTI-SELECT)

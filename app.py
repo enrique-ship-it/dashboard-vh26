@@ -548,6 +548,10 @@ CSS_STYLES = """
         border-radius: 0 12px 12px 0 !important;
         border: 1px solid rgba(219, 39, 119, 0.15) !important;
         box-shadow: 0 2px 8px rgba(219, 39, 119, 0.1) !important;
+        position: fixed !important;
+        top: 12px !important;
+        left: 0 !important;
+        z-index: 1001 !important;
     }
     
     [data-testid="collapsedControl"]:hover {
@@ -3174,16 +3178,20 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Logos con st.image nativo
+# Créditos en texto (sin logos)
 col_spacer1, col_norobot, col_sep, col_neutron, col_spacer2 = st.columns([2, 2, 0.3, 2, 2])
 
 with col_norobot:
     st.markdown("""
-    <p style="color: #6b7280; font-size: 0.7rem; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px; text-align: center;">
-        Estudio realizado por
-    </p>
+    <div style="text-align: center;">
+        <p style="color: #6b7280; font-size: 0.7rem; margin: 0 0 6px 0; text-transform: uppercase; letter-spacing: 1px;">
+            Estudio realizado por
+        </p>
+        <p style="color: #111827; font-size: 0.95rem; font-weight: 600; margin: 0;">
+            NO ROBOT
+        </p>
+    </div>
     """, unsafe_allow_html=True)
-    st.image("assets/logo_norobot.png", width=150)
 
 with col_sep:
     st.markdown("""
@@ -3192,11 +3200,15 @@ with col_sep:
 
 with col_neutron:
     st.markdown("""
-    <p style="color: #6b7280; font-size: 0.7rem; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px; text-align: center;">
-        Plataforma desarrollada por
-    </p>
+    <div style="text-align: center;">
+        <p style="color: #6b7280; font-size: 0.7rem; margin: 0 0 6px 0; text-transform: uppercase; letter-spacing: 1px;">
+            Plataforma desarrollada por
+        </p>
+        <p style="color: #111827; font-size: 0.95rem; font-weight: 600; margin: 0;">
+            NEUTRON
+        </p>
+    </div>
     """, unsafe_allow_html=True)
-    st.image("assets/logo_neutron_dark.png", width=180)
 
 st.markdown(f"""
 <div style="text-align: center; padding: 10px 0 20px 0;">

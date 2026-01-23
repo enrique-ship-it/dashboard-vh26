@@ -184,23 +184,44 @@ CSS_STYLES = """
         padding-top: 0.25rem !important;
     }
 
-    /* Dejar espacio al contenido principal cuando el sidebar está visible y sin gap superior */
-    [data-testid="stAppViewContainer"] {
+    /* Eliminar completamente cualquier espacio lateral causado por el sidebar */
+    [data-testid="stAppViewContainer"],
+    .appview-container,
+    .main-content,
+    [data-testid="block-container"] {
+        padding-left: 0 !important;
+        margin-left: 0 !important;
         padding-top: 0 !important;
         margin-top: 0 !important;
     }
 
-    [data-testid="stAppViewContainer"] > .main {
+    [data-testid="stAppViewContainer"] > .main,
+    .main {
+        padding-left: 0 !important;
+        margin-left: 0 !important;
         padding-top: 0 !important;
         margin-top: 0 !important;
     }
 
-    .main .block-container {
+    .main .block-container,
+    [data-testid="block-container"],
+    .block-container,
+    section.main > div {
         margin-top: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
         padding-top: 0.5rem !important;
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
         max-width: 100% !important;
+    }
+
+    /* Forzar que el contenido ocupe todo el ancho disponible */
+    .stApp > div,
+    .stApp section.main,
+    section.main > div:first-child {
+        padding-left: 0 !important;
+        margin-left: 0 !important;
     }
     
     /* Glass Card mejorada con inner glow */

@@ -145,14 +145,6 @@ CSS_STYLES = """
         background: linear-gradient(180deg, #ffffff 0%, #fdf2f8 100%) !important;
     }
     
-    /* Ocultar botón de colapsar sidebar */
-    [data-testid="collapsedControl"] {
-        display: none !important;
-    }
-    [data-testid="collapsedControl"] {
-        display: none !important;
-    }
-    
     /* Glass Card mejorada con inner glow */
     .glass-card {
         background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);

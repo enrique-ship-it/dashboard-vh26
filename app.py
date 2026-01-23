@@ -156,6 +156,9 @@ CSS_STYLES = """
         max-width: 21rem !important;
         left: 0 !important;
         z-index: 999 !important;
+        height: 100vh !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
     }
     
     /* Forzar sidebar expandido siempre - múltiples selectores */
@@ -182,6 +185,43 @@ CSS_STYLES = """
         background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
         pointer-events: none;
     }
+
+    /* Evitar panel interno angosto con scrollbar en el sidebar */
+    section[data-testid="stSidebar"] > div,
+    section[data-testid="stSidebar"] > div > div {
+        width: 100% !important;
+        height: 100% !important;
+        overflow: visible !important;
+    }
+
+    section[data-testid="stSidebar"] [data-testid="stSidebarContent"],
+    section[data-testid="stSidebar"] .stSidebarContent,
+    section[data-testid="stSidebar"] .block-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: visible !important;
+    }
+
+    /* Ocultar scrollbar interno del sidebar (si aparece) */
+    section[data-testid="stSidebar"] [data-testid="stSidebarContent"]::-webkit-scrollbar,
+    section[data-testid="stSidebar"] .stSidebarContent::-webkit-scrollbar {
+        width: 0 !important;
+        height: 0 !important;
+    }
+
+    section[data-testid="stSidebar"] [data-testid="stSidebarContent"] {
+        scrollbar-width: none !important;
+    }
+
+    /* Padding y alineación general del contenido del sidebar */
+    [data-testid="stSidebar"] .block-container {
+        padding-top: 1.6rem !important;
+        padding-left: 1.2rem !important;
+        padding-right: 1.2rem !important;
+        padding-bottom: 2rem !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
     
     [data-testid="stSidebar"] * {
         color: #4a4a4a !important;
@@ -194,6 +234,52 @@ CSS_STYLES = """
         font-size: 0.85rem !important;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        margin-bottom: 6px !important;
+    }
+
+    /* Alineación limpia de filtros en sidebar */
+    [data-testid="stSidebar"] .stSelectbox,
+    [data-testid="stSidebar"] .stMultiSelect {
+        width: 100% !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+    }
+
+    [data-testid="stSidebar"] .stSelectbox > div,
+    [data-testid="stSidebar"] .stMultiSelect > div {
+        width: 100% !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+    }
+
+    [data-testid="stSidebar"] .stSelectbox > div > div,
+    [data-testid="stSidebar"] .stMultiSelect > div > div {
+        min-height: 42px !important;
+        align-items: center !important;
+        padding: 6px 10px !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
+    }
+
+    [data-testid="stSidebar"] [data-baseweb="select"] {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    [data-testid="stSidebar"] [data-baseweb="select"] > div {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    [data-testid="stSidebar"] [data-baseweb="select"] > div > div {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    [data-testid="stSidebar"] .stButton > button {
+        height: 42px !important;
+        padding: 8px 12px !important;
     }
 
     [data-testid="stSidebar"] > div {
@@ -1315,11 +1401,6 @@ with st.sidebar:
     
     st.markdown("---")
     
-    st.markdown("#### 🎯 Filtros")
-    st.caption("Puedes seleccionar varios valores por filtro")
-    filter_edad, filter_zona, filter_gasto, filter_freq, active_filters = render_filters()
-    st.markdown("---")
-    
     # Info del dataset
     st.markdown("#### 📊 Sobre los datos")
     st.markdown(f"""
@@ -1345,6 +1426,37 @@ with st.sidebar:
         st.rerun()
 
 # ============================================================================
+# HEADER PRINCIPAL
+# ============================================================================
+st.markdown("""
+<div class="main-title">Consumer Insights Dashboard</div>
+<div class="subtitle">Estudio del mercado gastronómico en Villahermosa · Enero 2026</div>
+""", unsafe_allow_html=True)
+
+# ============================================================================
+# PANEL PRINCIPAL - FILTROS (EXPANDER DESTACADO)
+# ============================================================================
+st.markdown("""
+<style>
+    /* Hacer el expander de filtros más visible */
+    div[data-testid="stExpander"] {
+        background: linear-gradient(135deg, rgba(219, 39, 119, 0.08) 0%, rgba(147, 51, 234, 0.05) 100%) !important;
+        border: 2px solid rgba(219, 39, 119, 0.25) !important;
+        border-radius: 16px !important;
+        margin-bottom: 20px !important;
+    }
+    div[data-testid="stExpander"] summary {
+        font-weight: 600 !important;
+        color: #db2777 !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+with st.expander("🎯 **FILTROS** - Haz clic aquí para filtrar por edad, zona, gasto y frecuencia", expanded=False):
+    st.markdown("##### Selecciona los filtros que desees aplicar:")
+    filter_edad, filter_zona, filter_gasto, filter_freq, active_filters = render_filters()
+
+# ============================================================================
 # APLICAR FILTROS (MULTI-SELECT)
 # ============================================================================
 df_filtered = df_encuestas.copy()
@@ -1357,14 +1469,6 @@ if filter_gasto and col_gasto in df_filtered.columns:
     df_filtered = df_filtered[df_filtered[col_gasto].isin(filter_gasto)]
 if filter_freq and col_freq in df_filtered.columns:
     df_filtered = df_filtered[df_filtered[col_freq].isin(filter_freq)]
-
-# ============================================================================
-# HEADER PRINCIPAL
-# ============================================================================
-st.markdown("""
-<div class="main-title">Consumer Insights Dashboard</div>
-<div class="subtitle">Estudio del mercado gastronómico en Villahermosa · Enero 2026</div>
-""", unsafe_allow_html=True)
 
 # Botón de limpiar caché en panel principal (respaldo)
 col_cache_left, col_cache_right = st.columns([6, 1])

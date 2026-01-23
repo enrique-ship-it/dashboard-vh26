@@ -1713,13 +1713,13 @@ elif selected_page == "✅ Validación GMB":
                 google_text = ""
         
         with col_i1:
+            lider_texto = f"<strong>{leader['Restaurante']}</strong> domina con <strong>{leader['Menciones']} menciones</strong>."
+            if google_text:
+                lider_texto += f" {google_text}"
             st.markdown(f"""
             <div class="glass-card" style="border-left: 4px solid #22c55e;">
                 <h4 style="color: #166534; margin-bottom: 12px;">🏆 Líder indiscutible</h4>
-                <p style="color: #4b5563; margin: 0;">
-                    <strong>{leader['Restaurante']}</strong> domina con <strong>{leader['Menciones']} menciones</strong>. 
-                    {google_text}
-                </p>
+                <p style="color: #4b5563; margin: 0;">{lider_texto}</p>
             </div>
             """, unsafe_allow_html=True)
         
@@ -1747,8 +1747,18 @@ elif selected_page == "✅ Validación GMB":
         </div>
         """, unsafe_allow_html=True)
     
-    # Hidden gems
-    hidden_gems = [item for item in validation_data if item['Rating GMB'] and item['Rating GMB'] >= 4.5 and item['Reseñas'] and item['Reseñas'] >= 1000 and item['Menciones'] < 50]
+    # Hidden gems - filtrar NaN correctamente
+    hidden_gems = []
+    for item in validation_data:
+        try:
+            rating = item['Rating GMB']
+            resenas = item['Reseñas']
+            menciones = item['Menciones']
+            if rating and rating >= 4.5 and resenas and resenas >= 1000 and menciones < 50:
+                hidden_gems.append(item)
+        except (TypeError, ValueError):
+            continue
+    
     if hidden_gems:
         gem = hidden_gems[0]
         try:

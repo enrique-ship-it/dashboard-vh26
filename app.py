@@ -140,94 +140,15 @@ CSS_STYLES = """
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
     
-    /* ===== SIDEBAR - ESTILOS COMPLETOS ===== */
-    
-    /* Contenedor principal del sidebar */
+    /* ===== SIDEBAR ===== */
     section[data-testid="stSidebar"] {
         background: linear-gradient(180deg, #ffffff 0%, #fdf2f8 100%) !important;
-        border-right: 1px solid rgba(219, 39, 119, 0.12) !important;
-        width: 320px !important;
-        min-width: 320px !important;
-    }
-    
-    /* Contenido interno del sidebar */
-    section[data-testid="stSidebar"] > div:first-child {
-        padding: 1.5rem 1.25rem !important;
-        width: 100% !important;
-    }
-    
-    /* Asegurar que el contenido use todo el ancho */
-    section[data-testid="stSidebar"] [data-testid="stSidebarContent"] {
-        width: 100% !important;
-    }
-    
-    /* Textos en sidebar */
-    [data-testid="stSidebar"] * {
-        color: #374151 !important;
-    }
-    
-    /* Títulos de sección en sidebar (Navegación, Filtros, etc) */
-    [data-testid="stSidebar"] h4 {
-        color: #1f2937 !important;
-        font-size: 0.9rem !important;
-        font-weight: 600 !important;
-        margin-bottom: 0.75rem !important;
-    }
-    
-    /* Labels de los selectbox y multiselect */
-    [data-testid="stSidebar"] .stSelectbox label,
-    [data-testid="stSidebar"] .stMultiSelect label {
-        color: #6b7280 !important;
-        font-weight: 600 !important;
-        font-size: 0.8rem !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.3px !important;
-        margin-bottom: 0.25rem !important;
-    }
-    
-    /* Contenedores de selectbox y multiselect */
-    [data-testid="stSidebar"] .stSelectbox,
-    [data-testid="stSidebar"] .stMultiSelect {
-        width: 100% !important;
-        margin-bottom: 0.75rem !important;
-    }
-    
-    /* Inputs de los selectbox */
-    [data-testid="stSidebar"] .stSelectbox > div > div,
-    [data-testid="stSidebar"] .stMultiSelect > div > div {
-        background: white !important;
-        border: 1px solid rgba(219, 39, 119, 0.2) !important;
-        border-radius: 8px !important;
-    }
-    
-    /* Botones en sidebar */
-    [data-testid="stSidebar"] .stButton > button {
-        width: 100% !important;
-        background: white !important;
-        border: 1px solid rgba(219, 39, 119, 0.2) !important;
-        color: #db2777 !important;
-        border-radius: 8px !important;
-        font-weight: 500 !important;
-    }
-    
-    [data-testid="stSidebar"] .stButton > button:hover {
-        background: #fdf2f8 !important;
-        border-color: #db2777 !important;
-    }
-    
-    /* Separadores en sidebar */
-    [data-testid="stSidebar"] hr {
-        margin: 1rem 0 !important;
-        border-color: rgba(219, 39, 119, 0.1) !important;
-    }
-    
-    /* Caption/texto pequeño */
-    [data-testid="stSidebar"] .stCaption {
-        color: #9ca3af !important;
-        font-size: 0.75rem !important;
     }
     
     /* Ocultar botón de colapsar sidebar */
+    [data-testid="collapsedControl"] {
+        display: none !important;
+    }
     [data-testid="collapsedControl"] {
         display: none !important;
     }

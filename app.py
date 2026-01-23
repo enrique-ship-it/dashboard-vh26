@@ -140,9 +140,21 @@ CSS_STYLES = """
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
     
-    /* Sidebar: usar layout por defecto (solo fondo) */
+    /* Sidebar: forzar visible y con ancho fijo */
     section[data-testid="stSidebar"] {
         background: linear-gradient(180deg, #ffffff 0%, #fdf2f8 100%) !important;
+        visibility: visible !important;
+        display: block !important;
+        transform: translateX(0) !important;
+        width: 320px !important;
+        min-width: 320px !important;
+        max-width: 320px !important;
+    }
+
+    /* Dejar espacio al contenido principal cuando el sidebar está visible */
+    .main .block-container {
+        padding-left: 340px !important;
+        padding-right: 1.5rem !important;
     }
     
     /* Glass Card mejorada con inner glow */

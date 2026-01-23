@@ -199,10 +199,13 @@ CSS_STYLES = """
         visibility: hidden !important;
     }
     
-    /* Sidebar siempre fijo, no colapsable */
-    [data-testid="stSidebar"] {
-        position: fixed !important;
-        left: 0 !important;
+    /* Contenido principal con margen para el sidebar fijo */
+    [data-testid="stMain"],
+    .main .block-container {
+        margin-left: 20rem !important;
+        padding-left: 2rem !important;
+        width: calc(100% - 20rem) !important;
+        max-width: calc(100% - 20rem) !important;
     }
     
     /* Glass Card mejorada con inner glow */

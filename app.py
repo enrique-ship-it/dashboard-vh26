@@ -113,6 +113,18 @@ bg_base64 = get_bg_image()
 CSS_STYLES = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=SF+Pro+Display:wght@400;500;600;700&display=swap');
+
+    :root {
+        --glass-bg: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(252,231,243,0.88) 100%);
+        --glass-bg-soft: rgba(255, 255, 255, 0.85);
+        --glass-border: rgba(219, 39, 119, 0.15);
+        --glass-shadow: 0 4px 20px rgba(219, 39, 119, 0.08);
+        --glass-shadow-hover: 0 8px 30px rgba(219, 39, 119, 0.12);
+        --radius-lg: 28px;
+        --radius-md: 20px;
+        --text-primary: #1f2937;
+        --text-muted: #6b7280;
+    }
     
     /* Ocultar elementos de Streamlit/GitHub */
     #MainMenu {visibility: hidden;}
@@ -186,9 +198,9 @@ CSS_STYLES = """
         box-shadow: 
             0 10px 40px rgba(219, 39, 119, 0.15),
             0 4px 12px rgba(0, 0, 0, 0.06),
-            inset 3px 3px 8px rgba(255, 255, 255, 0.8),
-            inset -3px -3px 8px rgba(0, 0, 0, 0.12),
-            inset -1px -1px 3px rgba(255, 255, 255, 0.6) !important;
+            inset 2px 2px 6px rgba(255, 255, 255, 0.75),
+            inset -2px -2px 6px rgba(0, 0, 0, 0.10),
+            inset -1px -1px 3px rgba(255, 255, 255, 0.55) !important;
         border: none !important;
         animation: fadeInUp 0.5s ease-out !important;
     }
@@ -281,29 +293,29 @@ CSS_STYLES = """
     
     /* CARDS LIMPIAS */
     .glass-card {
-        background: rgba(255, 255, 255, 0.85);
-        border-radius: 20px;
-        border: 1px solid rgba(219, 39, 119, 0.12);
+        background: var(--glass-bg-soft);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--glass-border);
         padding: 24px;
         margin: 12px 0;
-        box-shadow: 0 4px 24px rgba(219, 39, 119, 0.08);
+        box-shadow: var(--glass-shadow);
         transition: all 0.3s ease;
     }
     
     .glass-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 32px rgba(219, 39, 119, 0.12);
+        box-shadow: var(--glass-shadow-hover);
         border-color: rgba(219, 39, 119, 0.2);
     }
     
     .kpi-card {
-        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(252,231,243,0.9) 100%);
-        border-radius: 20px;
-        border: 1px solid rgba(219, 39, 119, 0.15);
+        background: var(--glass-bg);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--glass-border);
         padding: 24px;
         text-align: center;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 20px rgba(219, 39, 119, 0.08);
+        box-shadow: var(--glass-shadow);
         min-height: 140px;
         display: flex;
         flex-direction: column;
@@ -312,7 +324,7 @@ CSS_STYLES = """
     
     .kpi-card:hover {
         transform: scale(1.02);
-        box-shadow: 0 8px 30px rgba(219, 39, 119, 0.15);
+        box-shadow: var(--glass-shadow-hover);
     }
     
     .kpi-value {
@@ -325,7 +337,7 @@ CSS_STYLES = """
     }
     
     .kpi-label {
-        color: #6b7280;
+        color: var(--text-muted);
         font-size: 0.9rem;
         font-weight: 500;
         margin-top: 8px;
@@ -343,7 +355,7 @@ CSS_STYLES = """
     }
     
     .subtitle {
-        color: #6b7280;
+        color: var(--text-muted);
         text-align: center;
         font-size: 1rem;
         margin-bottom: 32px;
@@ -353,10 +365,17 @@ CSS_STYLES = """
     .section-title {
         font-size: 1.3rem;
         font-weight: 600;
-        color: #1f2937;
+        color: var(--text-primary);
         margin: 28px 0 16px 0;
-        padding-left: 14px;
-        border-left: 4px solid #db2777;
+        padding: 14px 20px;
+        background: var(--glass-bg);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--glass-border);
+        box-shadow:
+            0 6px 18px rgba(0, 0, 0, 0.08),
+            0 2px 6px rgba(0, 0, 0, 0.05),
+            inset 2px 2px 5px rgba(255, 255, 255, 0.7),
+            inset -2px -2px 5px rgba(0, 0, 0, 0.12);
     }
     
     
@@ -511,10 +530,11 @@ CSS_STYLES = """
     }
     
     h1, h2, h3, h4, h5, h6 {
-        color: #1f2937 !important;
+        color: var(--text-primary) !important;
     }
     
-    p, span, div {
+    .main .stMarkdown p,
+    .main .stMarkdown span {
         color: #4b5563;
     }
     
@@ -1815,6 +1835,16 @@ elif selected_page == "👥 Perfil del Consumidor":
         if col_edad in df_filtered.columns:
             edad_counts = df_filtered[col_edad].value_counts()
             edad_counts = edad_counts[~edad_counts.index.isin(['No responde', 'No Respondió', 'No Respondio'])]
+            def _edad_sort_key(label):
+                label_text = str(label).lower()
+                if "más de" in label_text or "mas de" in label_text:
+                    return 999
+                nums = re.findall(r"\d+", label_text)
+                if nums:
+                    return int(nums[0])
+                return 998
+            edad_order = sorted(edad_counts.index, key=_edad_sort_key)
+            edad_counts = edad_counts.reindex(edad_order)
             
             fig = px.pie(
                 values=edad_counts.values,
@@ -1851,7 +1881,7 @@ elif selected_page == "👥 Perfil del Consumidor":
                 font=dict(color='#374151', family='Plus Jakarta Sans'),
                 legend=dict(font=dict(color='#374151'))
             )
-            fig.update_traces(textfont=dict(color='#374151'))
+            fig.update_traces(textfont=dict(color='#374151'), sort=False)
             st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
     
     # Matriz cruzada

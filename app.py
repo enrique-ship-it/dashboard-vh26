@@ -107,7 +107,7 @@ CSS_STYLES = """
     /* Ocultar elementos de Streamlit/GitHub */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-    header {visibility: hidden;}
+    header {visibility: visible;}
     .stDeployButton {display: none !important;}
     [data-testid="stToolbar"] {display: none !important;}
     .viewerBadge_container__r5tak {display: none !important;}
@@ -120,7 +120,7 @@ CSS_STYLES = """
     .st-emotion-cache-1dp5vir {display: none !important;}
     iframe[title="streamlit_feedback.st_feedback"] {display: none !important;}
     div[data-testid="stStatusWidget"] {display: none !important;}
-    button[kind="icon"] {display: none !important;}
+    button[kind="icon"] {display: inline-flex !important;}
     .stApp > div:last-child > div:last-child > div:last-child {display: none !important;}
     
     /* Animaciones globales */
@@ -564,13 +564,17 @@ CSS_STYLES = """
         z-index: 1000 !important;
     }
     
-    /* Deshabilitar botón de colapsar sidebar */
+    /* Mostrar botón de colapsar sidebar */
     [data-testid="collapsedControl"] {
-        display: none !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
-        width: 0 !important;
-        height: 0 !important;
+        display: inline-flex !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        width: 44px !important;
+        height: 44px !important;
+        background: rgba(255, 255, 255, 0.9) !important;
+        border-radius: 0 12px 12px 0 !important;
+        border: 1px solid rgba(219, 39, 119, 0.15) !important;
+        box-shadow: 0 2px 8px rgba(219, 39, 119, 0.1) !important;
     }
     
     ::-webkit-scrollbar {

@@ -1858,7 +1858,7 @@ elif selected_page == "👥 Perfil del Consumidor":
                 font=dict(color='#374151', family='Plus Jakarta Sans'),
                 legend=dict(font=dict(color='#374151'))
             )
-            fig.update_traces(textfont=dict(color='#374151'))
+            fig.update_traces(textfont=dict(color='#374151'), sort=False)
             st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
     
     with col2:

@@ -935,6 +935,7 @@ with st.sidebar:
         "🏆 Rankings por Categoría",
         "🔬 Análisis Detallado",
         "✅ Validación GMB",
+        "🌐 Ranking Google",
         "📊 Tendencias",
         "💬 Voz del Cliente",
         "📁 Explorar y Descargar"
@@ -1796,7 +1797,203 @@ elif selected_page == "✅ Validación GMB":
         """, unsafe_allow_html=True)
 
 # ============================================================================
-# PÁGINA 6: TENDENCIAS
+# PÁGINA 6: RANKING GOOGLE
+# ============================================================================
+elif selected_page == "🌐 Ranking Google":
+    
+    # Cargar logo de GMB
+    gmb_logo_path = Path(__file__).parent / "assets" / "gmb_logo.png"
+    if gmb_logo_path.exists():
+        with open(gmb_logo_path, "rb") as f:
+            gmb_logo_b64 = base64.b64encode(f.read()).decode()
+        st.markdown(f"""
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+            <img src="data:image/png;base64,{gmb_logo_b64}" style="height: 50px;"/>
+            <div>
+                <h2 style="margin: 0; color: #1f2937;">Ranking Google My Business</h2>
+                <p style="margin: 0; color: #6b7280;">Los mejor calificados según Google Maps</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown('<div class="section-title">🌐 Ranking Google My Business</div>', unsafe_allow_html=True)
+        st.caption("Los mejor calificados según Google Maps")
+    
+    # Filtrar restaurantes válidos (con rating y reseñas)
+    df_gmb_valid = df_gmb[df_gmb['rating'].notna() & df_gmb['reviews'].notna()].copy()
+    
+    # KPIs de Google
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.markdown(f"""
+        <div class="kpi-card">
+            <div class="kpi-value">{len(df_gmb_valid):,}</div>
+            <div class="kpi-label">Restaurantes en Google</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        avg_rating = df_gmb_valid['rating'].mean()
+        st.markdown(f"""
+        <div class="kpi-card">
+            <div class="kpi-value">{avg_rating:.1f}⭐</div>
+            <div class="kpi-label">Rating promedio</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        top_rated_count = len(df_gmb_valid[df_gmb_valid['rating'] >= 4.5])
+        st.markdown(f"""
+        <div class="kpi-card">
+            <div class="kpi-value">{top_rated_count}</div>
+            <div class="kpi-label">Con ⭐4.5 o más</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col4:
+        total_reviews = df_gmb_valid['reviews'].sum()
+        st.markdown(f"""
+        <div class="kpi-card">
+            <div class="kpi-value">{int(total_reviews):,}</div>
+            <div class="kpi-label">Reseñas totales</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Dos columnas: Top calificados y Más reseñados
+    col_left, col_right = st.columns(2)
+    
+    with col_left:
+        st.markdown('<div class="section-title">🏆 Mejor calificados</div>', unsafe_allow_html=True)
+        st.caption("Mínimo 300 reseñas para garantizar confiabilidad")
+        
+        top_rated = df_gmb_valid[df_gmb_valid['reviews'] >= 300].nlargest(10, 'rating')[['name', 'rating', 'reviews']]
+        
+        for i, (idx, row) in enumerate(top_rated.iterrows(), 1):
+            medal = "🥇" if i == 1 else "🥈" if i == 2 else "🥉" if i == 3 else f"#{i}"
+            st.markdown(f"""
+            <div class="glass-card" style="padding: 16px; min-height: auto; margin: 8px 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span style="font-size: 1.2rem; margin-right: 8px;">{medal}</span>
+                        <strong style="color: #1f2937;">{row['name']}</strong>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="color: #f59e0b; font-weight: 700;">⭐ {row['rating']}</span>
+                        <span style="color: #6b7280; font-size: 0.8rem; margin-left: 8px;">{int(row['reviews']):,} reseñas</span>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    with col_right:
+        st.markdown('<div class="section-title">📊 Más reseñados</div>', unsafe_allow_html=True)
+        st.caption("Los más populares por volumen de opiniones")
+        
+        most_reviewed = df_gmb_valid.nlargest(10, 'reviews')[['name', 'rating', 'reviews']]
+        
+        for i, (idx, row) in enumerate(most_reviewed.iterrows(), 1):
+            medal = "🥇" if i == 1 else "🥈" if i == 2 else "🥉" if i == 3 else f"#{i}"
+            st.markdown(f"""
+            <div class="glass-card" style="padding: 16px; min-height: auto; margin: 8px 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span style="font-size: 1.2rem; margin-right: 8px;">{medal}</span>
+                        <strong style="color: #1f2937;">{row['name']}</strong>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="color: #db2777; font-weight: 700;">{int(row['reviews']):,}</span>
+                        <span style="color: #6b7280; font-size: 0.8rem; margin-left: 8px;">⭐ {row['rating']}</span>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Sección de descubrimientos
+    st.markdown('<div class="section-title">💎 Descubrimientos</div>', unsafe_allow_html=True)
+    st.caption("Restaurantes con excelente rating que pocos conocen localmente")
+    
+    # Obtener menciones de la encuesta
+    mentions = get_restaurant_mentions(df_filtered)
+    mentioned_names = set([name.lower() for name in mentions.keys()])
+    
+    # Buscar joyas ocultas: buen rating, muchas reseñas, pero no mencionados
+    hidden_gems_gmb = df_gmb_valid[
+        (df_gmb_valid['rating'] >= 4.5) & 
+        (df_gmb_valid['reviews'] >= 500)
+    ].copy()
+    
+    # Filtrar los que NO están en menciones
+    hidden_gems_gmb['mentioned'] = hidden_gems_gmb['name'].str.lower().apply(
+        lambda x: any(m in x or x in m for m in mentioned_names)
+    )
+    hidden_gems_gmb = hidden_gems_gmb[~hidden_gems_gmb['mentioned']].nlargest(6, 'reviews')
+    
+    if len(hidden_gems_gmb) > 0:
+        cols = st.columns(3)
+        for i, (idx, row) in enumerate(hidden_gems_gmb.iterrows()):
+            with cols[i % 3]:
+                st.markdown(f"""
+                <div class="glass-card" style="text-align: center; border-left: 4px solid #8b5cf6;">
+                    <div style="font-size: 2rem;">💎</div>
+                    <div style="font-weight: 600; color: #1f2937; margin: 8px 0;">{row['name']}</div>
+                    <div style="color: #f59e0b; font-weight: 700;">⭐ {row['rating']}</div>
+                    <div style="color: #6b7280; font-size: 0.85rem;">{int(row['reviews']):,} reseñas en Google</div>
+                    <div style="color: #8b5cf6; font-size: 0.8rem; margin-top: 8px;">No mencionado en encuestas</div>
+                </div>
+                """, unsafe_allow_html=True)
+    else:
+        st.info("Los restaurantes mejor calificados en Google también son conocidos localmente. ¡Buena señal!")
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Alertas de reputación
+    st.markdown('<div class="section-title">⚠️ Alertas de reputación</div>', unsafe_allow_html=True)
+    st.caption("Restaurantes populares en encuesta pero con bajo rating en Google")
+    
+    # Top mencionados con rating bajo
+    alerts = []
+    top_mentioned = mentions.most_common(20)
+    for name, count in top_mentioned:
+        # Buscar en GMB
+        match = df_gmb_valid[df_gmb_valid['name'].str.lower().str.contains(name.lower(), na=False)]
+        if len(match) > 0:
+            gmb_row = match.iloc[0]
+            if gmb_row['rating'] < 4.0:
+                alerts.append({
+                    'name': name,
+                    'menciones': count,
+                    'rating': gmb_row['rating'],
+                    'reviews': gmb_row['reviews']
+                })
+    
+    if alerts:
+        for alert in alerts[:4]:
+            st.markdown(f"""
+            <div class="glass-card" style="border-left: 4px solid #ef4444; padding: 16px; min-height: auto;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong style="color: #1f2937;">{alert['name']}</strong>
+                        <span style="color: #22c55e; margin-left: 12px;">📣 {alert['menciones']} menciones</span>
+                    </div>
+                    <div style="color: #ef4444; font-weight: 700;">
+                        ⭐ {alert['rating']} en Google
+                    </div>
+                </div>
+                <p style="color: #6b7280; margin: 8px 0 0 0; font-size: 0.85rem;">
+                    Popular localmente pero con calificación baja. Oportunidad de mejora en servicio o experiencia.
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+    else:
+        st.success("✅ Todos los restaurantes populares tienen buenas calificaciones en Google. ¡El mercado está alineado!")
+
+# ============================================================================
+# PÁGINA 7: TENDENCIAS
 # ============================================================================
 elif selected_page == "📊 Tendencias":
     

@@ -540,6 +540,7 @@ CSS_STYLES = """
     [data-testid="stHeader"] {
         background: transparent !important;
         height: 2.5rem !important;
+        z-index: 1000 !important;
     }
     
     /* Estilizar el botón de colapsar/expandir sidebar */
@@ -552,6 +553,12 @@ CSS_STYLES = """
         top: 12px !important;
         left: 0 !important;
         z-index: 1001 !important;
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        width: 44px !important;
+        height: 44px !important;
     }
     
     [data-testid="collapsedControl"]:hover {

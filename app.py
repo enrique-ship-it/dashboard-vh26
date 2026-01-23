@@ -1950,84 +1950,183 @@ elif selected_page == "🌐 Ranking Google":
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Sección de descubrimientos
-    st.markdown('<div class="section-title">💎 Descubrimientos</div>', unsafe_allow_html=True)
-    st.caption("Restaurantes con excelente rating que pocos conocen localmente")
+    # =========================================================================
+    # SECCIÓN: ANÁLISIS COMPARATIVO LOCAL VS GOOGLE
+    # =========================================================================
     
     # Obtener menciones de la encuesta
     mentions = get_restaurant_mentions(df_filtered)
     mentioned_names = set([name.lower() for name in mentions.keys()])
     
-    # Buscar joyas ocultas: buen rating, muchas reseñas, pero no mencionados
-    hidden_gems_gmb = df_gmb_valid[
-        (df_gmb_valid['rating'] >= 4.5) & 
-        (df_gmb_valid['reviews'] >= 500)
-    ].copy()
-    
-    # Filtrar los que NO están en menciones
-    hidden_gems_gmb['mentioned'] = hidden_gems_gmb['name'].str.lower().apply(
-        lambda x: any(m in x or x in m for m in mentioned_names)
-    )
-    hidden_gems_gmb = hidden_gems_gmb[~hidden_gems_gmb['mentioned']].nlargest(6, 'reviews')
-    
-    if len(hidden_gems_gmb) > 0:
-        cols = st.columns(3)
-        for i, (idx, row) in enumerate(hidden_gems_gmb.iterrows()):
-            with cols[i % 3]:
-                st.markdown(f"""
-                <div class="glass-card" style="text-align: center; border-left: 4px solid #8b5cf6;">
-                    <div style="font-size: 2rem;">💎</div>
-                    <div style="font-weight: 600; color: #1f2937; margin: 8px 0;">{row['name']}</div>
-                    <div style="color: #f59e0b; font-weight: 700;">⭐ {row['rating']}</div>
-                    <div style="color: #6b7280; font-size: 0.85rem;">{int(row['reviews']):,} reseñas en Google</div>
-                    <div style="color: #8b5cf6; font-size: 0.8rem; margin-top: 8px;">No mencionado en encuestas</div>
-                </div>
-                """, unsafe_allow_html=True)
-    else:
-        st.info("Los restaurantes mejor calificados en Google también son conocidos localmente. ¡Buena señal!")
-    
-    st.markdown("<br>", unsafe_allow_html=True)
-    
-    # Alertas de reputación
-    st.markdown('<div class="section-title">⚠️ Alertas de reputación</div>', unsafe_allow_html=True)
-    st.caption("Restaurantes populares en encuesta pero con bajo rating en Google")
-    
-    # Top mencionados con rating bajo
-    alerts = []
-    top_mentioned = mentions.most_common(20)
-    for name, count in top_mentioned:
+    # Crear dataframe de comparación
+    comparison_data = []
+    for name, count in mentions.most_common(30):
         # Buscar en GMB
         match = df_gmb_valid[df_gmb_valid['name'].str.lower().str.contains(name.lower(), na=False)]
         if len(match) > 0:
             gmb_row = match.iloc[0]
-            if gmb_row['rating'] < 4.0:
-                alerts.append({
-                    'name': name,
-                    'menciones': count,
-                    'rating': gmb_row['rating'],
-                    'reviews': gmb_row['reviews']
-                })
+            comparison_data.append({
+                'name': name,
+                'menciones': count,
+                'rating': gmb_row['rating'],
+                'reviews': int(gmb_row['reviews']) if pd.notna(gmb_row['reviews']) else 0
+            })
     
-    if alerts:
-        for alert in alerts[:4]:
-            st.markdown(f"""
-            <div class="glass-card" style="border-left: 4px solid #ef4444; padding: 16px; min-height: auto;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <strong style="color: #1f2937;">{alert['name']}</strong>
-                        <span style="color: #22c55e; margin-left: 12px;">📣 {alert['menciones']} menciones</span>
-                    </div>
-                    <div style="color: #ef4444; font-weight: 700;">
-                        ⭐ {alert['rating']} en Google
+    # =========================================================================
+    # 1. SUBESTIMADOS: Buenos en Google pero poco mencionados localmente
+    # =========================================================================
+    st.markdown('<div class="section-title">📈 Subestimados localmente</div>', unsafe_allow_html=True)
+    st.caption("Excelentes en Google pero con pocas menciones en la encuesta - Oportunidad de awareness")
+    
+    # Buscar restaurantes con buen rating pero pocas menciones
+    underrated = df_gmb_valid[
+        (df_gmb_valid['rating'] >= 4.5) & 
+        (df_gmb_valid['reviews'] >= 300)
+    ].copy()
+    
+    # Calcular menciones para cada uno
+    def get_mentions(name):
+        name_lower = str(name).lower()
+        for m_name, m_count in mentions.items():
+            if m_name.lower() in name_lower or name_lower in m_name.lower():
+                return m_count
+        return 0
+    
+    underrated['local_mentions'] = underrated['name'].apply(get_mentions)
+    
+    # Filtrar los que tienen pocas menciones pero buen rating
+    underrated = underrated[underrated['local_mentions'] <= 10].nlargest(6, 'rating')
+    
+    if len(underrated) > 0:
+        cols = st.columns(3)
+        for i, (idx, row) in enumerate(underrated.iterrows()):
+            with cols[i % 3]:
+                mention_text = f"{int(row['local_mentions'])} menciones" if row['local_mentions'] > 0 else "Sin menciones"
+                st.markdown(f"""
+                <div class="glass-card" style="text-align: center; border-left: 4px solid #8b5cf6;">
+                    <div style="font-size: 1.8rem;">💎</div>
+                    <div style="font-weight: 600; color: #1f2937; margin: 8px 0; font-size: 0.95rem;">{row['name']}</div>
+                    <div style="color: #f59e0b; font-weight: 700; font-size: 1.2rem;">⭐ {row['rating']}</div>
+                    <div style="color: #6b7280; font-size: 0.8rem;">{int(row['reviews']):,} reseñas Google</div>
+                    <div style="background: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; margin-top: 8px; display: inline-block;">
+                        {mention_text} locales
                     </div>
                 </div>
-                <p style="color: #6b7280; margin: 8px 0 0 0; font-size: 0.85rem;">
-                    Popular localmente pero con calificación baja. Oportunidad de mejora en servicio o experiencia.
-                </p>
+                """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="alert-info" style="margin-top: 16px;">
+            <strong>💡 Insight:</strong> Estos restaurantes tienen excelente reputación en Google pero los tabasqueños 
+            no los mencionan mucho. Puede ser falta de awareness, marketing o posicionamiento local.
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.success("✅ Los mejor calificados en Google también son reconocidos localmente. ¡El mercado está alineado!")
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # =========================================================================
+    # 2. ALERTAS: Populares pero con rating bajo
+    # =========================================================================
+    st.markdown('<div class="section-title">⚠️ Alertas de reputación</div>', unsafe_allow_html=True)
+    st.caption("Populares localmente pero con calificación baja en Google - Riesgo de percepción")
+    
+    # Encontrar alertas
+    alerts = []
+    for item in comparison_data:
+        if item['rating'] < 4.2 and item['menciones'] >= 10:
+            # Calcular brecha
+            avg_rating = df_gmb_valid['rating'].mean()
+            gap = round(avg_rating - item['rating'], 1)
+            alerts.append({**item, 'gap': gap})
+    
+    alerts = sorted(alerts, key=lambda x: x['rating'])[:4]
+    
+    if alerts:
+        for alert in alerts:
+            # Color según severidad
+            if alert['rating'] < 3.5:
+                color = "#dc2626"
+                severity = "🔴 Crítico"
+            elif alert['rating'] < 4.0:
+                color = "#f59e0b"
+                severity = "🟡 Atención"
+            else:
+                color = "#eab308"
+                severity = "🟡 Monitorear"
+            
+            st.markdown(f"""
+            <div class="glass-card" style="border-left: 4px solid {color}; padding: 18px; min-height: auto;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <strong style="color: #1f2937; font-size: 1.1rem;">{alert['name']}</strong>
+                            <span style="background: #dcfce7; color: #166534; padding: 2px 10px; border-radius: 12px; font-size: 0.8rem;">
+                                📣 {alert['menciones']} menciones
+                            </span>
+                        </div>
+                        <p style="color: #6b7280; margin: 8px 0 0 0; font-size: 0.85rem;">
+                            Popular localmente pero {alert['gap']} puntos por debajo del promedio del mercado ({df_gmb_valid['rating'].mean():.1f}⭐).
+                        </p>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="color: {color}; font-weight: 700; font-size: 1.3rem;">⭐ {alert['rating']}</div>
+                        <div style="color: #6b7280; font-size: 0.75rem;">{alert['reviews']:,} reseñas</div>
+                        <div style="color: {color}; font-size: 0.75rem; margin-top: 4px;">{severity}</div>
+                    </div>
+                </div>
             </div>
             """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="alert-warning" style="margin-top: 16px;">
+            <strong>⚡ Recomendación:</strong> Estos restaurantes tienen popularidad local pero su reputación en Google 
+            no la refleja. Revisar comentarios negativos, mejorar servicio o incentivar reseñas positivas.
+        </div>
+        """, unsafe_allow_html=True)
     else:
         st.success("✅ Todos los restaurantes populares tienen buenas calificaciones en Google. ¡El mercado está alineado!")
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # =========================================================================
+    # 3. TOP PERFORMERS: Lo mejor de ambos mundos
+    # =========================================================================
+    st.markdown('<div class="section-title">🏆 Top Performers</div>', unsafe_allow_html=True)
+    st.caption("Los que dominan tanto en percepción local como en Google")
+    
+    top_performers = [item for item in comparison_data if item['rating'] >= 4.5 and item['menciones'] >= 20]
+    top_performers = sorted(top_performers, key=lambda x: (x['rating'], x['menciones']), reverse=True)[:5]
+    
+    if top_performers:
+        cols = st.columns(len(top_performers))
+        for i, perf in enumerate(top_performers):
+            with cols[i]:
+                st.markdown(f"""
+                <div class="glass-card" style="text-align: center; border-top: 4px solid #22c55e; padding: 20px;">
+                    <div style="font-size: 1.5rem;">{"🥇" if i == 0 else "🥈" if i == 1 else "🥉" if i == 2 else "⭐"}</div>
+                    <div style="font-weight: 600; color: #1f2937; margin: 8px 0;">{perf['name']}</div>
+                    <div style="display: flex; justify-content: center; gap: 16px; margin-top: 8px;">
+                        <div>
+                            <div style="color: #f59e0b; font-weight: 700;">⭐ {perf['rating']}</div>
+                            <div style="color: #9ca3af; font-size: 0.7rem;">Google</div>
+                        </div>
+                        <div>
+                            <div style="color: #db2777; font-weight: 700;">{perf['menciones']}</div>
+                            <div style="color: #9ca3af; font-size: 0.7rem;">Menciones</div>
+                        </div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+        
+        st.markdown("""
+        <div class="alert-success" style="margin-top: 16px;">
+            <strong>🎯 Los líderes del mercado:</strong> Estos restaurantes tienen excelente reputación en Google Y 
+            son los favoritos de los tabasqueños. Son el benchmark a seguir.
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.info("Aplica filtros para ver los top performers del segmento seleccionado.")
 
 # ============================================================================
 # PÁGINA 7: TENDENCIAS

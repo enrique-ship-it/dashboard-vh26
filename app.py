@@ -3160,65 +3160,47 @@ elif selected_page == "📁 Explorar y Descargar":
 # ============================================================================
 # FOOTER CON CRÉDITOS
 # ============================================================================
-import base64
-
-def get_base64_image(image_path):
-    """Convierte imagen a base64 para mostrar en HTML"""
-    try:
-        with open(image_path, "rb") as f:
-            return base64.b64encode(f.read()).decode()
-    except:
-        return None
-
-# Cargar logos
-logo_norobot_b64 = get_base64_image("assets/logo_norobot.png")
-logo_neutron_b64 = get_base64_image("assets/logo_neutron_dark.png")
-
 st.markdown("<br><br>", unsafe_allow_html=True)
-st.markdown(f"""
+st.markdown("""
 <div style="
     text-align: center; 
-    padding: 40px 24px; 
+    padding: 30px 24px 10px 24px; 
     border-top: 1px solid rgba(219, 39, 119, 0.15);
     background: linear-gradient(180deg, transparent, rgba(219, 39, 119, 0.02));
 ">
-    <p style="color: #9ca3af; font-size: 0.85rem; margin: 0 0 24px 0;">
+    <p style="color: #9ca3af; font-size: 0.85rem; margin: 0;">
         Consumer Insights Dashboard · Villahermosa 2026
     </p>
-    
-    <div style="
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        gap: 60px;
-        flex-wrap: wrap;
-        margin-bottom: 20px;
-    ">
-        <!-- NO ROBOT - Estudio -->
-        <div style="text-align: center;">
-            <p style="color: #6b7280; font-size: 0.7rem; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px;">
-                Estudio realizado por
-            </p>
-            <img src="data:image/png;base64,{logo_norobot_b64}" 
-                 style="height: 45px; width: auto; filter: brightness(0.9);" 
-                 alt="NO ROBOT">
-        </div>
-        
-        <!-- Separador -->
-        <div style="width: 1px; height: 50px; background: rgba(219, 39, 119, 0.2);"></div>
-        
-        <!-- Neutron - Plataforma -->
-        <div style="text-align: center;">
-            <p style="color: #6b7280; font-size: 0.7rem; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px;">
-                Plataforma desarrollada por
-            </p>
-            <img src="data:image/png;base64,{logo_neutron_b64}" 
-                 style="height: 40px; width: auto;" 
-                 alt="Neutron | Ecosistema Digital">
-        </div>
-    </div>
-    
-    <p style="color: #4b5563; font-size: 0.75rem; margin: 16px 0 0 0;">
+</div>
+""", unsafe_allow_html=True)
+
+# Logos con st.image nativo
+col_spacer1, col_norobot, col_sep, col_neutron, col_spacer2 = st.columns([2, 2, 0.3, 2, 2])
+
+with col_norobot:
+    st.markdown("""
+    <p style="color: #6b7280; font-size: 0.7rem; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px; text-align: center;">
+        Estudio realizado por
+    </p>
+    """, unsafe_allow_html=True)
+    st.image("assets/logo_norobot.png", width=150)
+
+with col_sep:
+    st.markdown("""
+    <div style="width: 1px; height: 60px; background: rgba(219, 39, 119, 0.2); margin: 0 auto;"></div>
+    """, unsafe_allow_html=True)
+
+with col_neutron:
+    st.markdown("""
+    <p style="color: #6b7280; font-size: 0.7rem; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px; text-align: center;">
+        Plataforma desarrollada por
+    </p>
+    """, unsafe_allow_html=True)
+    st.image("assets/logo_neutron_dark.png", width=180)
+
+st.markdown(f"""
+<div style="text-align: center; padding: 10px 0 20px 0;">
+    <p style="color: #4b5563; font-size: 0.75rem; margin: 0;">
         {len(df_encuestas)} encuestados · {len(df_gmb):,} restaurantes · 2 focus groups
     </p>
 </div>

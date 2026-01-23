@@ -179,19 +179,16 @@ CSS_STYLES = """
         background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
         backdrop-filter: blur(20px) saturate(180%);
         -webkit-backdrop-filter: blur(20px) saturate(180%);
-        border-radius: 24px;
+        border-radius: 20px;
         border: 1px solid rgba(255, 255, 255, 0.6);
-        padding: 24px;
-        margin: 12px 0;
+        padding: 18px 20px;
+        margin: 8px 0;
         box-shadow: 
             0 4px 24px rgba(219, 39, 119, 0.08),
             inset 0 1px 1px rgba(255, 255, 255, 0.8),
             inset 0 -1px 1px rgba(219, 39, 119, 0.05);
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        min-height: 180px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        min-height: auto;
         position: relative;
         overflow: hidden;
     }

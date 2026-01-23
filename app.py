@@ -1325,6 +1325,7 @@ elif selected_page == "👥 Perfil del Consumidor":
         cross_tab = pd.crosstab(df_filtered[col_edad], df_filtered[col_gasto])
         cross_tab = cross_tab.drop(['No responde', 'No Respondió', 'No Respondio'], errors='ignore')
         cross_tab = cross_tab.drop(['No responde', 'No Respondió', 'No Respondio'], axis=1, errors='ignore')
+        cross_tab = cross_tab.loc[cross_tab.sum(axis=1) > 0]
         
         fig = px.imshow(
             cross_tab,

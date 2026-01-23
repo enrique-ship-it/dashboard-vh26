@@ -1453,10 +1453,18 @@ elif selected_page == "👥 Perfil del Consumidor":
     col_oc1, col_oc2 = st.columns(2)
     
     with col_oc1:
-        # Ocasiones de consumo
+        # Ocasiones de consumo - separar respuestas múltiples por coma
         if col_ocasion in df_filtered.columns:
-            ocasion_counts = df_filtered[col_ocasion].value_counts()
-            ocasion_counts = ocasion_counts[~ocasion_counts.index.isin(['No responde', 'No Respondió', 'No Respondio', 'no responde'])]
+            # Separar respuestas múltiples
+            ocasion_raw = df_filtered[col_ocasion].dropna().astype(str)
+            ocasion_list = []
+            for o in ocasion_raw:
+                ocasion_list.extend([x.strip() for x in o.split(',') if x.strip()])
+            
+            ocasion_counts = Counter(ocasion_list)
+            # Filtrar valores no válidos
+            invalid = ['no responde', 'no respondió', 'no respondio', 'no', 'ninguno', 'na', 'n/a', '1']
+            ocasion_counts = {k: v for k, v in ocasion_counts.items() if k.lower() not in invalid and len(k) > 2}
             
             # Mapear a iconos
             ocasion_icons = {
@@ -1465,19 +1473,24 @@ elif selected_page == "👥 Perfil del Consumidor":
                 'Cita en pareja': '💑',
                 'Negocio / trabajo': '💼',
                 'Solo(a)': '🧘',
+                'Consumo individual': '🧘',
                 'Celebración especial': '🎉',
+                'Celebraciones': '🎉',
             }
             
-            if len(ocasion_counts) > 0:
+            if ocasion_counts:
                 st.markdown("""
                 <div class="glass-card">
                     <h4 style="color: #1f2937; margin-bottom: 15px;">🎯 ¿Cuándo van a comer fuera?</h4>
                 """, unsafe_allow_html=True)
                 
-                for ocasion, count in ocasion_counts.head(5).items():
-                    pct = count / len(df_filtered) * 100
+                total_ocasiones = sum(ocasion_counts.values())
+                sorted_ocasiones = sorted(ocasion_counts.items(), key=lambda x: x[1], reverse=True)[:6]
+                
+                for ocasion, count in sorted_ocasiones:
+                    pct = count / total_ocasiones * 100
                     icon = ocasion_icons.get(ocasion, '🍽️')
-                    bar_width = min(pct * 2, 100)
+                    bar_width = min(pct * 1.5, 100)
                     st.markdown(f"""
                     <div style="margin-bottom: 12px;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">

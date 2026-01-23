@@ -1623,6 +1623,19 @@ with st.sidebar:
     )
     
     st.markdown("---")
+
+    # Mantenimiento
+    st.markdown("#### 🧹 Mantenimiento")
+    if st.button("🧽 Limpiar caché (hard)", help="Borra caché de datos/recursos y recarga la app"):
+        st.cache_data.clear()
+        st.cache_resource.clear()
+        st.session_state.clear()
+        if hasattr(st, "rerun"):
+            st.rerun()
+        else:
+            st.experimental_rerun()
+
+    st.markdown("---")
     
     # FILTROS EN SIDEBAR
     st.markdown("#### 🎯 Filtros")

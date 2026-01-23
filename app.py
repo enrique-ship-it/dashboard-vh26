@@ -1104,6 +1104,12 @@ except Exception as e:
 if not data_loaded:
     st.stop()
 
+# Columnas de filtros
+col_edad = "2. ¿Qué edad tienes?"
+col_zona = "5. ¿En qué zona o colonia de Villahermosa vives actualmente?"
+col_gasto = "12. En promedio, ¿cuánto gastan en tu grupo por persona cuando comen en un restaurante?"
+col_freq = "3. ¿Con qué frecuencia acostumbras comer en restaurantes en Villahermosa?"
+
 # ============================================================================
 # SIDEBAR - NAVEGACIÓN Y FILTROS
 # ============================================================================
@@ -1113,6 +1119,91 @@ def clear_filters():
     st.session_state.filter_zona = []
     st.session_state.filter_gasto = []
     st.session_state.filter_freq = []
+
+def render_filters():
+    """Renderiza filtros y devuelve selecciones + contador"""
+    # Filtro Edad - MULTISELECT
+    if col_edad in df_encuestas.columns:
+        edad_options = sorted([x for x in df_encuestas[col_edad].dropna().unique() if x not in ['No responde', 'No Respondió', 'No Respondio']])
+        filter_edad = st.multiselect(
+            "📅 Rango de edad",
+            edad_options,
+            default=[],
+            key="filter_edad",
+            placeholder="Todos los rangos"
+        )
+    else:
+        filter_edad = []
+
+    # Filtro Zona - MULTISELECT
+    if col_zona in df_encuestas.columns:
+        zona_options = sorted([x for x in df_encuestas[col_zona].dropna().unique() if x not in ['No responde', 'No Respondió', 'No Respondio']])
+        filter_zona = st.multiselect(
+            "📍 Zona",
+            zona_options,
+            default=[],
+            key="filter_zona",
+            placeholder="Todas las zonas"
+        )
+    else:
+        filter_zona = []
+
+    # Filtro Gasto - MULTISELECT (ordenado de menor a mayor)
+    if col_gasto in df_encuestas.columns:
+        gasto_orden = ['Menos de $200', '$200 – $350', '$350 – $500', '$500 – $700', 'Más de $700']
+        gasto_disponibles = [x for x in df_encuestas[col_gasto].dropna().unique() if x not in ['No responde', 'No Respondió', 'No Respondio']]
+        gasto_options = [g for g in gasto_orden if g in gasto_disponibles]
+        filter_gasto = st.multiselect(
+            "💰 Nivel de gasto",
+            gasto_options,
+            default=[],
+            key="filter_gasto",
+            placeholder="Todos los niveles"
+        )
+    else:
+        filter_gasto = []
+
+    # Filtro Frecuencia - MULTISELECT (ordenado de mayor a menor frecuencia)
+    if col_freq in df_encuestas.columns:
+        freq_orden = ['Varias veces por semana', '1 vez por semana', '2–3 veces al mes', '1 vez al mes', 'Casi nunca']
+        freq_disponibles = [x for x in df_encuestas[col_freq].dropna().unique() if x not in ['No responde', 'No Respondió', 'No Respondio']]
+        freq_options = [f for f in freq_orden if f in freq_disponibles]
+        filter_freq = st.multiselect(
+            "🔄 Frecuencia",
+            freq_options,
+            default=[],
+            key="filter_freq",
+            placeholder="Todas las frecuencias"
+        )
+    else:
+        filter_freq = []
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    active_filters = sum([
+        len(filter_edad) > 0,
+        len(filter_zona) > 0,
+        len(filter_gasto) > 0,
+        len(filter_freq) > 0
+    ])
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.button("🔄 Limpiar", use_container_width=True, on_click=clear_filters)
+
+    with col2:
+        filter_color = "#db2777" if active_filters > 0 else "#9ca3af"
+        filter_bg = "linear-gradient(135deg, #fce7f3, #f5d0fe)" if active_filters > 0 else "#f9fafb"
+        st.markdown(f"""
+        <div style="background: {filter_bg}; 
+                    padding: 8px 12px; border-radius: 8px; text-align: center;
+                    border: 1px solid rgba(219, 39, 119, 0.2); height: 42px;
+                    display: flex; align-items: center; justify-content: center; gap: 4px;">
+            <span style="color: {filter_color}; font-weight: 700; font-size: 1rem;">{active_filters}</span>
+            <span style="color: #6b7280; font-size: 0.8rem;">filtros</span>
+        </div>
+        """, unsafe_allow_html=True)
+
+    return filter_edad, filter_zona, filter_gasto, filter_freq, active_filters
 
 # Función para cargar imagen como base64
 def get_image_base64(image_path):
@@ -1176,112 +1267,8 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # Filtros Globales con Multi-Select
     st.markdown("#### 🎯 Filtros")
-    st.caption("Puedes seleccionar varios valores por filtro")
-    
-    # Columnas de filtros
-    col_edad = "2. ¿Qué edad tienes?"
-    col_zona = "5. ¿En qué zona o colonia de Villahermosa vives actualmente?"
-    col_gasto = "12. En promedio, ¿cuánto gastan en tu grupo por persona cuando comen en un restaurante?"
-    col_freq = "3. ¿Con qué frecuencia acostumbras comer en restaurantes en Villahermosa?"
-    
-    # Filtro Edad - MULTISELECT
-    if col_edad in df_encuestas.columns:
-        edad_options = sorted([x for x in df_encuestas[col_edad].dropna().unique() if x not in ['No responde', 'No Respondió', 'No Respondio']])
-        filter_edad = st.multiselect(
-            "📅 Rango de edad",
-            edad_options,
-            default=[],
-            key="filter_edad",
-            placeholder="Todos los rangos"
-        )
-    else:
-        filter_edad = []
-    
-    # Filtro Zona - MULTISELECT
-    if col_zona in df_encuestas.columns:
-        zona_options = sorted([x for x in df_encuestas[col_zona].dropna().unique() if x not in ['No responde', 'No Respondió', 'No Respondio']])
-        filter_zona = st.multiselect(
-            "📍 Zona",
-            zona_options,
-            default=[],
-            key="filter_zona",
-            placeholder="Todas las zonas"
-        )
-    else:
-        filter_zona = []
-    
-    # Filtro Gasto - MULTISELECT (ordenado de menor a mayor)
-    if col_gasto in df_encuestas.columns:
-        # Orden lógico de gasto
-        gasto_orden = ['Menos de $200', '$200 – $350', '$350 – $500', '$500 – $700', 'Más de $700']
-        gasto_disponibles = [x for x in df_encuestas[col_gasto].dropna().unique() if x not in ['No responde', 'No Respondió', 'No Respondio']]
-        # Mantener solo los que existen en el dataset, en el orden correcto
-        gasto_options = [g for g in gasto_orden if g in gasto_disponibles]
-        filter_gasto = st.multiselect(
-            "💰 Nivel de gasto",
-            gasto_options,
-            default=[],
-            key="filter_gasto",
-            placeholder="Todos los niveles"
-        )
-    else:
-        filter_gasto = []
-    
-    # Filtro Frecuencia - MULTISELECT (ordenado de mayor a menor frecuencia)
-    if col_freq in df_encuestas.columns:
-        # Orden lógico de frecuencia
-        freq_orden = ['Varias veces por semana', '1 vez por semana', '2–3 veces al mes', '1 vez al mes', 'Casi nunca']
-        freq_disponibles = [x for x in df_encuestas[col_freq].dropna().unique() if x not in ['No responde', 'No Respondió', 'No Respondio']]
-        freq_options = [f for f in freq_orden if f in freq_disponibles]
-        filter_freq = st.multiselect(
-            "🔄 Frecuencia",
-            freq_options,
-            default=[],
-            key="filter_freq",
-            placeholder="Todas las frecuencias"
-        )
-    else:
-        filter_freq = []
-    
-    # Botón Reset y contador
-    st.markdown("<br>", unsafe_allow_html=True)
-    
-    active_filters = sum([
-        len(filter_edad) > 0,
-        len(filter_zona) > 0,
-        len(filter_gasto) > 0,
-        len(filter_freq) > 0
-    ])
-    
-    # Estilos para botones del sidebar
-    st.markdown("""
-    <style>
-    div[data-testid="stHorizontalBlock"] > div:first-child button {
-        height: 42px !important;
-        min-height: 42px !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        st.button("🔄 Limpiar", use_container_width=True, on_click=clear_filters)
-    
-    with col2:
-        filter_color = "#db2777" if active_filters > 0 else "#9ca3af"
-        filter_bg = "linear-gradient(135deg, #fce7f3, #f5d0fe)" if active_filters > 0 else "#f9fafb"
-        st.markdown(f"""
-        <div style="background: {filter_bg}; 
-                    padding: 8px 12px; border-radius: 8px; text-align: center;
-                    border: 1px solid rgba(219, 39, 119, 0.2); height: 42px;
-                    display: flex; align-items: center; justify-content: center; gap: 4px;">
-            <span style="color: {filter_color}; font-weight: 700; font-size: 1rem;">{active_filters}</span>
-            <span style="color: #6b7280; font-size: 0.8rem;">filtros</span>
-        </div>
-        """, unsafe_allow_html=True)
-    
+    st.caption("Los filtros están en el panel principal")
     st.markdown("---")
     
     # Info del dataset
@@ -2312,9 +2299,16 @@ elif selected_page == "🌐 Ranking Google":
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # =========================================================================
-    # SECCIÓN: ANÁLISIS COMPARATIVO LOCAL VS GOOGLE
-    # =========================================================================
+    # ==========================================================================
+    # FILTROS EN PANEL PRINCIPAL (siempre visibles)
+    # ==========================================================================
+    with st.expander("🎯 Filtros", expanded=False):
+        st.caption("Puedes seleccionar varios valores por filtro")
+        filter_edad, filter_zona, filter_gasto, filter_freq, active_filters = render_filters()
+
+    # ==========================================================================
+    # APLICAR FILTROS (MULTI-SELECT)
+    # ==========================================================================
     
     # Obtener menciones de la encuesta
     mentions = get_restaurant_mentions(df_filtered)

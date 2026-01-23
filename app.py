@@ -147,6 +147,17 @@ CSS_STYLES = """
         -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
         border-right: 1px solid rgba(219, 39, 119, 0.15) !important;
         box-shadow: 4px 0 24px rgba(219, 39, 119, 0.08) !important;
+        transform: none !important;
+        visibility: visible !important;
+        display: block !important;
+    }
+    
+    /* Forzar sidebar expandido siempre */
+    [data-testid="stSidebar"][aria-expanded="false"] {
+        transform: none !important;
+        visibility: visible !important;
+        display: block !important;
+        margin-left: 0 !important;
     }
     
     [data-testid="stSidebar"]::before {

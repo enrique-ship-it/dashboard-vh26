@@ -1150,6 +1150,9 @@ def get_image_base64(image_path):
         return base64.b64encode(img_file.read()).decode()
 
 with st.sidebar:
+    # Test simple
+    st.write("### SIDEBAR VISIBLE")
+    
     # Logo NO ROBOT compacto
     logo_path = Path(__file__).parent / "assets" / "logo.png"
     if logo_path.exists():

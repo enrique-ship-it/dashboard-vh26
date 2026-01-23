@@ -1822,21 +1822,31 @@ elif selected_page == "🌐 Ranking Google":
     # Filtrar restaurantes válidos (con rating y reseñas, SOLO de Villahermosa, SOLO restaurantes)
     df_gmb_valid = df_gmb[df_gmb['rating'].notna() & df_gmb['reviews'].notna()].copy()
     
-    # Filtrar SOLO Villahermosa (excluir CDMX, Veracruz, Chihuahua, etc.)
-    exclude_cities = ['cdmx', 'ciudad de méxico', 'cuauhtémoc', 'benito juárez', 'del valle', 
-                      'chihuahua', 'veracruz', 'ver.', 'chih.', 'camp.', 'carmen', 'oaxaca']
-    villahermosa_keywords = ['villahermosa', 'tab.', 'tabasco']
-    
+    # Filtrar SOLO Villahermosa usando múltiples criterios
     def is_villahermosa(address):
         if pd.isna(address):
             return False
         addr_lower = str(address).lower()
-        for kw in exclude_cities:
-            if kw in addr_lower:
+        
+        # Excluir explícitamente otras ciudades/estados
+        exclude = ['cdmx', 'ciudad de méxico', 'cuauhtémoc', 'benito juárez', 'del valle',
+                   'chihuahua', 'chih.', 'veracruz', 'ver.', 'oaxaca', 'camp.', 'carmen',
+                   'mérida', 'yuc.', 'monterrey', 'guadalajara', 'puebla', 'cdad. del carmen']
+        for ex in exclude:
+            if ex in addr_lower:
                 return False
-        for kw in villahermosa_keywords:
-            if kw in addr_lower:
+        
+        # Incluir si tiene indicadores de Villahermosa/Tabasco
+        include = ['villahermosa', ', tab.', 'tabasco', ', tab,']
+        for inc in include:
+            if inc in addr_lower:
                 return True
+        
+        # Incluir por código postal de Tabasco (86xxx)
+        import re
+        if re.search(r'\b86\d{3}\b', addr_lower):
+            return True
+        
         return False
     
     # Filtrar NO restaurantes (plazas, tiendas, hoteles, etc.)

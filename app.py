@@ -147,12 +147,6 @@ CSS_STYLES = """
         -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
         border-right: 1px solid rgba(219, 39, 119, 0.15) !important;
         box-shadow: 4px 0 24px rgba(219, 39, 119, 0.08) !important;
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        transform: none !important;
-        min-width: 20rem !important;
-        width: 20rem !important;
     }
     
     [data-testid="stSidebar"]::before {
@@ -178,34 +172,15 @@ CSS_STYLES = """
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
-    
-    /* Forzar sidebar siempre visible */
-    [data-testid="stSidebar"][aria-expanded="false"] {
-        transform: translateX(0) !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        min-width: 20rem !important;
-        width: 20rem !important;
-        display: block !important;
-    }
 
     [data-testid="stSidebar"] > div {
-        width: 20rem !important;
+        width: 100% !important;
     }
     
-    /* Botón de colapsar sidebar - OCULTO */
+    /* Botón de colapsar sidebar - OCULTO para que no se pueda cerrar */
     [data-testid="collapsedControl"] {
         display: none !important;
         visibility: hidden !important;
-    }
-    
-    /* Contenido principal con margen para el sidebar fijo */
-    [data-testid="stMain"],
-    .main .block-container {
-        margin-left: 20rem !important;
-        padding-left: 2rem !important;
-        width: calc(100% - 20rem) !important;
-        max-width: calc(100% - 20rem) !important;
     }
     
     /* Glass Card mejorada con inner glow */

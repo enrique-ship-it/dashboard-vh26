@@ -1329,6 +1329,13 @@ st.markdown("""
 <div class="subtitle">Estudio del mercado gastronómico en Villahermosa · Enero 2026</div>
 """, unsafe_allow_html=True)
 
+# Botón de limpiar caché en panel principal (respaldo)
+col_cache_left, col_cache_right = st.columns([6, 1])
+with col_cache_right:
+    if st.button("🗑️ Limpiar caché", use_container_width=True, help="Actualiza los datos desde los archivos"):
+        st.cache_data.clear()
+        st.rerun()
+
 # Indicador de filtros activos
 if active_filters > 0:
     filter_texts = []

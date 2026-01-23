@@ -102,6 +102,15 @@ CSS_STYLES = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
     
+    /* Ocultar elementos de Streamlit/GitHub */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    .stDeployButton {display: none !important;}
+    [data-testid="stToolbar"] {display: none !important;}
+    .viewerBadge_container__r5tak {display: none !important;}
+    .styles_viewerBadge__CvC9N {display: none !important;}
+    
     .stApp {
         font-family: 'Plus Jakarta Sans', sans-serif;
     }

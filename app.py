@@ -140,8 +140,8 @@ CSS_STYLES = """
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
     
-    /* Sidebar mejorado con efecto glass real */
-    [data-testid="stSidebar"] {
+    /* Sidebar mejorado con efecto glass real - FORZAR SIEMPRE VISIBLE */
+    section[data-testid="stSidebar"] {
         background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(252,231,243,0.9) 100%) !important;
         backdrop-filter: blur(24px) saturate(180%) !important;
         -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
@@ -149,18 +149,30 @@ CSS_STYLES = """
         box-shadow: 4px 0 24px rgba(219, 39, 119, 0.08) !important;
         transform: none !important;
         visibility: visible !important;
-        display: block !important;
+        display: flex !important;
+        opacity: 1 !important;
+        width: 21rem !important;
+        min-width: 21rem !important;
+        max-width: 21rem !important;
+        left: 0 !important;
+        z-index: 999 !important;
     }
     
-    /* Forzar sidebar expandido siempre */
-    [data-testid="stSidebar"][aria-expanded="false"] {
+    /* Forzar sidebar expandido siempre - múltiples selectores */
+    section[data-testid="stSidebar"][aria-expanded="false"],
+    section[data-testid="stSidebar"][aria-expanded="true"],
+    [data-testid="stSidebar"] {
         transform: none !important;
         visibility: visible !important;
-        display: block !important;
+        display: flex !important;
+        opacity: 1 !important;
         margin-left: 0 !important;
+        left: 0 !important;
+        width: 21rem !important;
+        min-width: 21rem !important;
     }
     
-    [data-testid="stSidebar"]::before {
+    section[data-testid="stSidebar"]::before {
         content: '';
         position: absolute;
         top: 0;
@@ -680,6 +692,34 @@ CSS_STYLES = """
 """
 
 st.markdown(CSS_STYLES, unsafe_allow_html=True)
+
+# JavaScript para forzar sidebar siempre abierto
+st.markdown("""
+<script>
+    // Forzar sidebar visible
+    function forceSidebarOpen() {
+        const sidebar = document.querySelector('section[data-testid="stSidebar"]');
+        if (sidebar) {
+            sidebar.setAttribute('aria-expanded', 'true');
+            sidebar.style.transform = 'none';
+            sidebar.style.visibility = 'visible';
+            sidebar.style.display = 'flex';
+            sidebar.style.opacity = '1';
+            sidebar.style.width = '21rem';
+            sidebar.style.minWidth = '21rem';
+            sidebar.style.left = '0';
+        }
+    }
+    
+    // Ejecutar inmediatamente y cada 500ms
+    forceSidebarOpen();
+    setInterval(forceSidebarOpen, 500);
+    
+    // También al cargar
+    window.addEventListener('load', forceSidebarOpen);
+    document.addEventListener('DOMContentLoaded', forceSidebarOpen);
+</script>
+""", unsafe_allow_html=True)
 
 # Aplicar fondo con overlay para mejor contraste
 if bg_base64:

@@ -381,17 +381,16 @@ CSS_STYLES = """
     }
     
     .kpi-card::after {
-        content: '';
+        transform: translateY(-6px) scale(1.01);
         position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
+            rgba(255,255,255,0.55) 0%, 
+            rgba(0,0,0,0.05) 50%,
+            rgba(255,255,255,0.50) 100%);
         height: 200%;
-        background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.25) 50%, transparent 60%);
-        animation: shimmer 4s infinite;
-        pointer-events: none;
-    }
-    
+            0 16px 48px rgba(0, 0, 0, 0.20),
+            0 4px 12px rgba(0, 0, 0, 0.10),
+            inset 0 1px 0 rgba(255, 255, 255, 0.7),
+            inset 0 -1px 1px rgba(0, 0, 0, 0.12);
     .kpi-card:hover {
         transform: translateY(-8px) scale(1.03);
         box-shadow: 
@@ -431,18 +430,26 @@ CSS_STYLES = """
     
     /* TÍTULOS CON EFECTO LIQUID */
     .main-title {
-        font-size: 2.6rem;
-        font-weight: 900;
-        background: linear-gradient(135deg, #1f2937 0%, #db2777 35%, #9333ea 65%, #db2777 100%);
-        background-size: 300% auto;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #1f2937;
         text-align: center;
-        margin-bottom: 12px;
-        animation: shimmer 8s linear infinite;
-        letter-spacing: -1px;
-        filter: drop-shadow(0 4px 10px rgba(219, 39, 119, 0.15));
+        margin: 0 auto 16px auto;
+        padding: 18px 28px;
+        max-width: 720px;
+        background: linear-gradient(135deg, 
+            rgba(255,255,255,0.45) 0%, 
+            rgba(0,0,0,0.06) 50%,
+            rgba(255,255,255,0.40) 100%);
+        backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
+        -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
+        border-radius: 28px;
+        box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.10),
+            0 4px 12px rgba(0, 0, 0, 0.06),
+            inset 2px 2px 6px rgba(255, 255, 255, 0.7),
+            inset -2px -2px 6px rgba(0, 0, 0, 0.12);
+        letter-spacing: -0.5px;
     }
     
     .subtitle {
@@ -1628,19 +1635,6 @@ with st.sidebar:
     )
     
     st.markdown("---")
-
-    # Mantenimiento
-    st.markdown("#### 🧹 Mantenimiento")
-    if st.button("🧽 Limpiar caché (hard)", help="Borra caché de datos/recursos y recarga la app"):
-        st.cache_data.clear()
-        st.cache_resource.clear()
-        st.session_state.clear()
-        if hasattr(st, "rerun"):
-            st.rerun()
-        else:
-            st.experimental_rerun()
-
-    st.markdown("---")
     
     # FILTROS EN SIDEBAR
     st.markdown("#### 🎯 Filtros")
@@ -1979,11 +1973,14 @@ elif selected_page == "👥 Perfil del Consumidor":
         if col_gasto in df_filtered.columns:
             gasto_counts = df_filtered[col_gasto].value_counts()
             gasto_counts = gasto_counts[~gasto_counts.index.isin(['No responde', 'No Respondió', 'No Respondio'])]
+            gasto_order = ['Menos de $200', '$200 – $350', '$350 – $500', '$500 – $700', 'Más de $700']
+            gasto_counts = gasto_counts.reindex([g for g in gasto_order if g in gasto_counts.index])
             
             fig = px.pie(
                 values=gasto_counts.values,
                 names=gasto_counts.index,
-                color_discrete_sequence=['#fae8ff', '#e9d5ff', '#c084fc', '#a855f7', '#7c3aed']
+                color_discrete_sequence=['#fae8ff', '#e9d5ff', '#c084fc', '#a855f7', '#7c3aed'],
+                category_orders={col_gasto: gasto_order}
             )
             fig.update_layout(
                 title=dict(text="¿Cuánto gastan por persona?", font=dict(color='#1f2937', size=16)),
@@ -2003,6 +2000,9 @@ elif selected_page == "👥 Perfil del Consumidor":
         cross_tab = pd.crosstab(df_filtered[col_edad], df_filtered[col_gasto])
         cross_tab = cross_tab.drop(['No responde', 'No Respondió', 'No Respondio'], errors='ignore')
         cross_tab = cross_tab.drop(['No responde', 'No Respondió', 'No Respondio'], axis=1, errors='ignore')
+        gasto_order = ['Menos de $200', '$200 – $350', '$350 – $500', '$500 – $700', 'Más de $700']
+        ordered_cols = [g for g in gasto_order if g in cross_tab.columns]
+        cross_tab = cross_tab[ordered_cols]
         cross_tab = cross_tab.loc[cross_tab.sum(axis=1) > 0]
         
         fig = px.imshow(

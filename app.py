@@ -140,93 +140,25 @@ CSS_STYLES = """
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
     
-    /* Sidebar mejorado con efecto glass real - FORZAR SIEMPRE VISIBLE */
+    /* ===== SIDEBAR LIMPIO Y SIMPLE ===== */
     section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(252,231,243,0.9) 100%) !important;
-        backdrop-filter: blur(24px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+        background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(252,231,243,0.95) 100%) !important;
         border-right: 1px solid rgba(219, 39, 119, 0.15) !important;
-        box-shadow: 4px 0 24px rgba(219, 39, 119, 0.08) !important;
-        transform: none !important;
-        visibility: visible !important;
-        display: flex !important;
-        opacity: 1 !important;
-        width: 21rem !important;
-        min-width: 21rem !important;
-        max-width: 21rem !important;
-        left: 0 !important;
-        z-index: 999 !important;
-        height: 100vh !important;
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
     }
     
-    /* Forzar sidebar expandido siempre - múltiples selectores */
-    section[data-testid="stSidebar"][aria-expanded="false"],
-    section[data-testid="stSidebar"][aria-expanded="true"],
-    [data-testid="stSidebar"] {
-        transform: none !important;
-        visibility: visible !important;
-        display: flex !important;
-        opacity: 1 !important;
-        margin-left: 0 !important;
-        left: 0 !important;
-        width: 21rem !important;
-        min-width: 21rem !important;
+    /* Contenido del sidebar con padding correcto */
+    section[data-testid="stSidebar"] > div:first-child {
+        padding-top: 1rem !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
     }
     
-    section[data-testid="stSidebar"]::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
-        pointer-events: none;
-    }
-
-    /* Evitar panel interno angosto con scrollbar en el sidebar */
-    section[data-testid="stSidebar"] > div,
-    section[data-testid="stSidebar"] > div > div {
-        width: 100% !important;
-        height: 100% !important;
-        overflow: visible !important;
-    }
-
-    section[data-testid="stSidebar"] [data-testid="stSidebarContent"],
-    section[data-testid="stSidebar"] .stSidebarContent,
-    section[data-testid="stSidebar"] .block-container {
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow: visible !important;
-    }
-
-    /* Ocultar scrollbar interno del sidebar (si aparece) */
-    section[data-testid="stSidebar"] [data-testid="stSidebarContent"]::-webkit-scrollbar,
-    section[data-testid="stSidebar"] .stSidebarContent::-webkit-scrollbar {
-        width: 0 !important;
-        height: 0 !important;
-    }
-
-    section[data-testid="stSidebar"] [data-testid="stSidebarContent"] {
-        scrollbar-width: none !important;
-    }
-
-    /* Padding y alineación general del contenido del sidebar */
-    [data-testid="stSidebar"] .block-container {
-        padding-top: 1.6rem !important;
-        padding-left: 1.2rem !important;
-        padding-right: 1.2rem !important;
-        padding-bottom: 2rem !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
-    }
-    
+    /* Colores de texto en sidebar */
     [data-testid="stSidebar"] * {
         color: #4a4a4a !important;
     }
     
+    /* Labels de filtros */
     [data-testid="stSidebar"] .stSelectbox label,
     [data-testid="stSidebar"] .stMultiSelect label {
         color: #6b7280 !important;
@@ -234,62 +166,17 @@ CSS_STYLES = """
         font-size: 0.85rem !important;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        margin-bottom: 6px !important;
     }
-
-    /* Alineación limpia de filtros en sidebar */
+    
+    /* Selectbox y multiselect en sidebar */
     [data-testid="stSidebar"] .stSelectbox,
     [data-testid="stSidebar"] .stMultiSelect {
         width: 100% !important;
-        margin: 0 !important;
-        max-width: 100% !important;
-        min-width: 100% !important;
-    }
-
-    [data-testid="stSidebar"] .stSelectbox > div,
-    [data-testid="stSidebar"] .stMultiSelect > div {
-        width: 100% !important;
-        margin: 0 !important;
-        max-width: 100% !important;
-    }
-
-    [data-testid="stSidebar"] .stSelectbox > div > div,
-    [data-testid="stSidebar"] .stMultiSelect > div > div {
-        min-height: 42px !important;
-        align-items: center !important;
-        padding: 6px 10px !important;
-        box-sizing: border-box !important;
-        width: 100% !important;
-    }
-
-    [data-testid="stSidebar"] [data-baseweb="select"] {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-
-    [data-testid="stSidebar"] [data-baseweb="select"] > div {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-
-    [data-testid="stSidebar"] [data-baseweb="select"] > div > div {
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-
-    [data-testid="stSidebar"] .stButton > button {
-        height: 42px !important;
-        padding: 8px 12px !important;
-    }
-
-    [data-testid="stSidebar"] > div {
-        width: 100% !important;
     }
     
-    /* Botón de colapsar sidebar - OCULTO para que no se pueda cerrar */
+    /* Ocultar botón de colapsar */
     [data-testid="collapsedControl"] {
         display: none !important;
-        visibility: hidden !important;
     }
     
     /* Glass Card mejorada con inner glow */
@@ -652,26 +539,6 @@ CSS_STYLES = """
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* Ocultar header pero mantener el botón del sidebar visible */
-    [data-testid="stHeader"] {
-        background: transparent !important;
-        height: 2.5rem !important;
-        z-index: 1000 !important;
-    }
-    
-    /* Mostrar botón de colapsar sidebar */
-    [data-testid="collapsedControl"] {
-        display: inline-flex !important;
-        visibility: visible !important;
-        pointer-events: auto !important;
-        width: 44px !important;
-        height: 44px !important;
-        background: rgba(255, 255, 255, 0.9) !important;
-        border-radius: 0 12px 12px 0 !important;
-        border: 1px solid rgba(219, 39, 119, 0.15) !important;
-        box-shadow: 0 2px 8px rgba(219, 39, 119, 0.1) !important;
-    }
-    
     ::-webkit-scrollbar {
         width: 8px;
         height: 8px;
@@ -778,34 +645,6 @@ CSS_STYLES = """
 """
 
 st.markdown(CSS_STYLES, unsafe_allow_html=True)
-
-# JavaScript para forzar sidebar siempre abierto
-st.markdown("""
-<script>
-    // Forzar sidebar visible
-    function forceSidebarOpen() {
-        const sidebar = document.querySelector('section[data-testid="stSidebar"]');
-        if (sidebar) {
-            sidebar.setAttribute('aria-expanded', 'true');
-            sidebar.style.transform = 'none';
-            sidebar.style.visibility = 'visible';
-            sidebar.style.display = 'flex';
-            sidebar.style.opacity = '1';
-            sidebar.style.width = '21rem';
-            sidebar.style.minWidth = '21rem';
-            sidebar.style.left = '0';
-        }
-    }
-    
-    // Ejecutar inmediatamente y cada 500ms
-    forceSidebarOpen();
-    setInterval(forceSidebarOpen, 500);
-    
-    // También al cargar
-    window.addEventListener('load', forceSidebarOpen);
-    document.addEventListener('DOMContentLoaded', forceSidebarOpen);
-</script>
-""", unsafe_allow_html=True)
 
 # Aplicar fondo con overlay para mejor contraste
 if bg_base64:
@@ -1345,36 +1184,33 @@ def get_image_base64(image_path):
         return base64.b64encode(img_file.read()).decode()
 
 with st.sidebar:
-    # Logo NO ROBOT con efecto premium
+    # Logo NO ROBOT compacto
     logo_path = Path(__file__).parent / "assets" / "logo.png"
     if logo_path.exists():
         logo_base64 = get_image_base64(logo_path)
         st.markdown(f"""
-        <div style="text-align: center; padding: 24px 10px; margin-bottom: 24px; 
+        <div style="text-align: center; padding: 16px 10px; margin-bottom: 16px; 
                     background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(252,231,243,0.7) 100%);
-                    border-radius: 20px;
-                    border: 1px solid rgba(219, 39, 119, 0.1);
-                    box-shadow: 0 4px 16px rgba(219, 39, 119, 0.08);">
+                    border-radius: 16px;
+                    border: 1px solid rgba(219, 39, 119, 0.1);">
             <img src="data:image/png;base64,{logo_base64}" 
-                 style="max-width: 160px; height: auto; margin-bottom: 10px; 
-                        filter: drop-shadow(0 2px 4px rgba(219, 39, 119, 0.15));">
-            <p style="color: #9ca3af; font-size: 0.7rem; margin: 0; text-transform: uppercase; 
-                      letter-spacing: 2px; font-weight: 600;">Consumer Insights</p>
+                 style="max-width: 120px; height: auto; margin-bottom: 6px;">
+            <p style="color: #9ca3af; font-size: 0.65rem; margin: 0; text-transform: uppercase; 
+                      letter-spacing: 1.5px; font-weight: 600;">Consumer Insights</p>
         </div>
         """, unsafe_allow_html=True)
     else:
         st.markdown("""
-        <div style="text-align: center; padding: 24px 10px; margin-bottom: 24px; 
+        <div style="text-align: center; padding: 16px 10px; margin-bottom: 16px; 
                     background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(252,231,243,0.7) 100%);
-                    border-radius: 20px;
-                    border: 1px solid rgba(219, 39, 119, 0.1);
-                    box-shadow: 0 4px 16px rgba(219, 39, 119, 0.08);">
-            <div style="font-size: 1.4rem; font-weight: 800; 
+                    border-radius: 16px;
+                    border: 1px solid rgba(219, 39, 119, 0.1);">
+            <div style="font-size: 1.2rem; font-weight: 800; 
                         background: linear-gradient(135deg, #db2777, #9333ea);
                         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-                        letter-spacing: 3px;">NO ROBOT</div>
-            <p style="color: #9ca3af; font-size: 0.7rem; margin-top: 6px; text-transform: uppercase; 
-                      letter-spacing: 2px; font-weight: 600;">Consumer Insights</p>
+                        letter-spacing: 2px;">NO ROBOT</div>
+            <p style="color: #9ca3af; font-size: 0.65rem; margin-top: 4px; text-transform: uppercase; 
+                      letter-spacing: 1.5px; font-weight: 600;">Consumer Insights</p>
         </div>
         """, unsafe_allow_html=True)
     

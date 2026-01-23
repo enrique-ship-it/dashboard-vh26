@@ -88,8 +88,8 @@ st.set_page_config(
 # CARGAR FONDO COMO BASE64
 # ============================================================================
 def get_bg_image():
-    # Usar Fondo 1.png de NR Imagen
-    bg_path = Path("/Users/enrique/Documents/Proyectos/NR Imagen/Fondo 1.png")
+    # Usar Fondo 4.png de NR Imagen
+    bg_path = Path("/Users/enrique/Documents/Proyectos/NR Imagen/Fondo 4.png")
     if bg_path.exists():
         with open(bg_path, "rb") as f:
             return base64.b64encode(f.read()).decode()

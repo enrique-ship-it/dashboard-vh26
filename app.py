@@ -97,7 +97,7 @@ bg_base64 = get_bg_image()
 # ============================================================================
 # ESTILOS CSS - DISEÑO CLARO Y LIMPIO
 # ============================================================================
-# CSS base sin variables
+# CSS base con glassmorphism mejorado
 CSS_STYLES = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
@@ -121,15 +121,44 @@ CSS_STYLES = """
     button[kind="icon"] {display: none !important;}
     .stApp > div:last-child > div:last-child > div:last-child {display: none !important;}
     
+    /* Animaciones globales */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+    
+    @keyframes pulse-glow {
+        0%, 100% { box-shadow: 0 4px 24px rgba(219, 39, 119, 0.1); }
+        50% { box-shadow: 0 4px 32px rgba(219, 39, 119, 0.2); }
+    }
+    
     .stApp {
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
     
+    /* Sidebar mejorado con efecto glass real */
     [data-testid="stSidebar"] {
-        background: rgba(255, 255, 255, 0.92) !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
-        border-right: 1px solid rgba(219, 39, 119, 0.1) !important;
+        background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(252,231,243,0.9) 100%) !important;
+        backdrop-filter: blur(24px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+        border-right: 1px solid rgba(219, 39, 119, 0.15) !important;
+        box-shadow: 4px 0 24px rgba(219, 39, 119, 0.08) !important;
+    }
+    
+    [data-testid="stSidebar"]::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+        pointer-events: none;
     }
     
     [data-testid="stSidebar"] * {
@@ -139,141 +168,240 @@ CSS_STYLES = """
     [data-testid="stSidebar"] .stSelectbox label,
     [data-testid="stSidebar"] .stMultiSelect label {
         color: #6b7280 !important;
-        font-weight: 500 !important;
+        font-weight: 600 !important;
         font-size: 0.85rem !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
     
+    /* Glass Card mejorada con inner glow */
     .glass-card {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-radius: 20px;
-        border: 1px solid rgba(219, 39, 119, 0.12);
+        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.6);
         padding: 24px;
         margin: 12px 0;
-        box-shadow: 0 4px 24px rgba(219, 39, 119, 0.08);
-        transition: all 0.3s ease;
+        box-shadow: 
+            0 4px 24px rgba(219, 39, 119, 0.08),
+            inset 0 1px 1px rgba(255, 255, 255, 0.8),
+            inset 0 -1px 1px rgba(219, 39, 119, 0.05);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         min-height: 180px;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .glass-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
     }
     
     .glass-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 32px rgba(219, 39, 119, 0.12);
-        border-color: rgba(219, 39, 119, 0.2);
+        transform: translateY(-4px);
+        box-shadow: 
+            0 12px 40px rgba(219, 39, 119, 0.15),
+            inset 0 1px 1px rgba(255, 255, 255, 0.9),
+            inset 0 -1px 1px rgba(219, 39, 119, 0.08);
+        border-color: rgba(219, 39, 119, 0.25);
     }
     
+    /* KPI Cards con efecto premium */
     .kpi-card {
-        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(252,231,243,0.9) 100%);
-        backdrop-filter: blur(16px);
-        border-radius: 20px;
-        border: 1px solid rgba(219, 39, 119, 0.15);
-        padding: 24px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(252,231,243,0.85) 100%);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        padding: 28px 24px;
         text-align: center;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 20px rgba(219, 39, 119, 0.08);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 
+            0 4px 24px rgba(219, 39, 119, 0.1),
+            inset 0 2px 4px rgba(255, 255, 255, 0.9);
         min-height: 140px;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .kpi-card::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%);
+        animation: shimmer 3s infinite;
+        pointer-events: none;
     }
     
     .kpi-card:hover {
-        transform: scale(1.02);
-        box-shadow: 0 8px 30px rgba(219, 39, 119, 0.15);
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: 
+            0 16px 48px rgba(219, 39, 119, 0.2),
+            inset 0 2px 4px rgba(255, 255, 255, 1);
     }
     
     .kpi-value {
-        font-size: 2.2rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #db2777 0%, #9333ea 100%);
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #db2777 0%, #9333ea 50%, #db2777 100%);
+        background-size: 200% auto;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+        animation: shimmer 4s linear infinite;
+        letter-spacing: -1px;
     }
     
     .kpi-label {
         color: #6b7280;
-        font-size: 0.9rem;
-        font-weight: 500;
-        margin-top: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-top: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
     
     .main-title {
-        font-size: 2.2rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #1f2937 0%, #db2777 50%, #9333ea 100%);
+        font-size: 2.4rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #1f2937 0%, #db2777 40%, #9333ea 70%, #db2777 100%);
+        background-size: 300% auto;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         text-align: center;
-        margin-bottom: 4px;
+        margin-bottom: 8px;
+        animation: shimmer 6s linear infinite;
+        letter-spacing: -0.5px;
     }
     
     .subtitle {
         color: #6b7280;
         text-align: center;
-        font-size: 1rem;
-        margin-bottom: 32px;
+        font-size: 1.05rem;
+        margin-bottom: 36px;
         font-weight: 400;
+        letter-spacing: 0.3px;
     }
     
+    /* Separador de sección mejorado */
     .section-title {
-        font-size: 1.3rem;
-        font-weight: 600;
+        font-size: 1.35rem;
+        font-weight: 700;
         color: #1f2937;
-        margin: 28px 0 16px 0;
-        padding-left: 14px;
+        margin: 40px 0 20px 0;
+        padding: 12px 18px;
         border-left: 4px solid #db2777;
+        background: linear-gradient(90deg, rgba(219, 39, 119, 0.08) 0%, transparent 100%);
+        border-radius: 0 12px 12px 0;
+        position: relative;
     }
     
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(219, 39, 119, 0.2), transparent);
+    }
+    
+    /* Alerts con efecto glass */
     .alert-success {
-        background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%);
-        border: 1px solid rgba(34, 197, 94, 0.3);
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.12) 0%, rgba(34, 197, 94, 0.05) 100%);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(34, 197, 94, 0.25);
         border-radius: 16px;
-        padding: 18px;
+        padding: 20px 22px;
         color: #166534;
-        margin: 10px 0;
+        margin: 14px 0;
+        box-shadow: 0 4px 16px rgba(34, 197, 94, 0.1);
+        animation: fadeInUp 0.4s ease-out;
     }
     
     .alert-warning {
-        background: linear-gradient(135deg, rgba(234, 179, 8, 0.1) 0%, rgba(234, 179, 8, 0.05) 100%);
-        border: 1px solid rgba(234, 179, 8, 0.3);
+        background: linear-gradient(135deg, rgba(234, 179, 8, 0.12) 0%, rgba(234, 179, 8, 0.05) 100%);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(234, 179, 8, 0.25);
         border-radius: 16px;
-        padding: 18px;
+        padding: 20px 22px;
         color: #854d0e;
-        margin: 10px 0;
+        margin: 14px 0;
+        box-shadow: 0 4px 16px rgba(234, 179, 8, 0.1);
+        animation: fadeInUp 0.4s ease-out;
     }
     
     .alert-danger {
-        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
-        border: 1px solid rgba(239, 68, 68, 0.3);
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(239, 68, 68, 0.05) 100%);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(239, 68, 68, 0.25);
         border-radius: 16px;
-        padding: 18px;
+        padding: 20px 22px;
         color: #991b1b;
-        margin: 10px 0;
+        margin: 14px 0;
+        box-shadow: 0 4px 16px rgba(239, 68, 68, 0.1);
+        animation: fadeInUp 0.4s ease-out;
     }
     
     .alert-info {
-        background: linear-gradient(135deg, rgba(219, 39, 119, 0.08) 0%, rgba(147, 51, 234, 0.05) 100%);
+        background: linear-gradient(135deg, rgba(219, 39, 119, 0.1) 0%, rgba(147, 51, 234, 0.06) 100%);
+        backdrop-filter: blur(8px);
         border: 1px solid rgba(219, 39, 119, 0.2);
         border-radius: 16px;
-        padding: 18px;
+        padding: 20px 22px;
         color: #4a4a4a;
-        margin: 10px 0;
+        margin: 14px 0;
+        box-shadow: 0 4px 16px rgba(219, 39, 119, 0.08);
+        animation: fadeInUp 0.4s ease-out;
     }
     
     .quote-card {
-        background: rgba(255, 255, 255, 0.9);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(252, 231, 243, 0.5) 100%);
+        backdrop-filter: blur(12px);
         border-left: 4px solid #db2777;
-        border-radius: 0 16px 16px 0;
-        padding: 18px 22px;
-        margin: 14px 0;
+        border-radius: 0 20px 20px 0;
+        padding: 22px 26px;
+        margin: 16px 0;
         font-style: italic;
         color: #374151;
-        box-shadow: 0 2px 12px rgba(219, 39, 119, 0.06);
+        box-shadow: 
+            0 4px 20px rgba(219, 39, 119, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        position: relative;
+        transition: all 0.3s ease;
+    }
+    
+    .quote-card::before {
+        content: '"';
+        position: absolute;
+        top: 10px;
+        left: 16px;
+        font-size: 3rem;
+        color: rgba(219, 39, 119, 0.15);
+        font-family: Georgia, serif;
+        line-height: 1;
+    }
+    
+    .quote-card:hover {
+        transform: translateX(4px);
+        box-shadow: 0 6px 24px rgba(219, 39, 119, 0.12);
     }
     
     h1, h2, h3, h4, h5, h6 {
@@ -285,20 +413,27 @@ CSS_STYLES = """
     }
     
     .stButton > button {
-        background: white;
+        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(252,231,243,0.9) 100%) !important;
         color: #db2777 !important;
-        border: 1px solid rgba(219, 39, 119, 0.3);
-        border-radius: 10px;
-        padding: 8px 16px;
-        font-weight: 500;
-        transition: all 0.2s ease;
-        box-shadow: 0 2px 6px rgba(219, 39, 119, 0.1);
+        border: 1px solid rgba(219, 39, 119, 0.25) !important;
+        border-radius: 12px !important;
+        padding: 10px 20px !important;
+        font-weight: 600 !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 2px 8px rgba(219, 39, 119, 0.1) !important;
+        backdrop-filter: blur(8px) !important;
     }
     
     .stButton > button:hover {
-        background: #fce7f3;
-        border-color: #db2777;
-        box-shadow: 0 4px 12px rgba(219, 39, 119, 0.15);
+        background: linear-gradient(135deg, #fce7f3 0%, #f5d0fe 100%) !important;
+        border-color: #db2777 !important;
+        box-shadow: 0 6px 20px rgba(219, 39, 119, 0.2) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    .stButton > button:active {
+        transform: translateY(0) !important;
+        box-shadow: 0 2px 8px rgba(219, 39, 119, 0.15) !important;
     }
     
     .stSelectbox > div > div,
@@ -320,28 +455,65 @@ CSS_STYLES = """
         color: #831843 !important;
     }
     
+    /* Tabs mejorados con efecto glass */
     .stTabs [data-baseweb="tab-list"] {
-        background: rgba(255, 255, 255, 0.6);
-        border-radius: 14px;
-        padding: 6px;
-        gap: 8px;
-        border: 1px solid rgba(219, 39, 119, 0.1);
+        background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(252,231,243,0.6) 100%) !important;
+        backdrop-filter: blur(12px) !important;
+        border-radius: 16px !important;
+        padding: 8px !important;
+        gap: 6px !important;
+        border: 1px solid rgba(219, 39, 119, 0.12) !important;
+        box-shadow: 0 2px 12px rgba(219, 39, 119, 0.06) !important;
     }
     
     .stTabs [data-baseweb="tab"] {
-        background: transparent;
-        color: #6b7280;
-        border-radius: 10px;
-        padding: 10px 18px;
-        font-weight: 500;
+        background: transparent !important;
+        color: #6b7280 !important;
+        border-radius: 12px !important;
+        padding: 12px 20px !important;
+        font-weight: 500 !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .stTabs [data-baseweb="tab"]:hover {
+        background: rgba(219, 39, 119, 0.06) !important;
+        color: #db2777 !important;
     }
     
     .stTabs [aria-selected="true"] {
-        background: white !important;
+        background: linear-gradient(135deg, white 0%, #fdf2f8 100%) !important;
         color: #db2777 !important;
-        font-weight: 600 !important;
-        box-shadow: 0 2px 8px rgba(219, 39, 119, 0.15) !important;
+        font-weight: 700 !important;
+        box-shadow: 0 4px 16px rgba(219, 39, 119, 0.15) !important;
         border: 1px solid rgba(219, 39, 119, 0.2) !important;
+    }
+    
+    /* Radio buttons (pestañas horizontales) mejorados */
+    .stRadio > div {
+        background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(252,231,243,0.7) 100%) !important;
+        backdrop-filter: blur(12px) !important;
+        border-radius: 16px !important;
+        padding: 8px 12px !important;
+        border: 1px solid rgba(219, 39, 119, 0.12) !important;
+        gap: 8px !important;
+    }
+    
+    .stRadio label {
+        background: transparent !important;
+        padding: 10px 18px !important;
+        border-radius: 10px !important;
+        transition: all 0.3s ease !important;
+        font-weight: 500 !important;
+    }
+    
+    .stRadio label:hover {
+        background: rgba(219, 39, 119, 0.08) !important;
+    }
+    
+    .stRadio label[data-checked="true"] {
+        background: white !important;
+        box-shadow: 0 2px 10px rgba(219, 39, 119, 0.15) !important;
+        font-weight: 600 !important;
     }
     
     .stDataFrame {
@@ -427,21 +599,40 @@ CSS_STYLES = """
     }
     
     .ranking-item {
-        background: rgba(255, 255, 255, 0.9);
+        background: linear-gradient(135deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.8) 100%);
+        backdrop-filter: blur(8px);
         border: 1px solid rgba(219, 39, 119, 0.1);
-        border-radius: 14px;
-        padding: 16px 20px;
+        border-radius: 16px;
+        padding: 18px 22px;
         margin: 10px 0;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        transition: all 0.2s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .ranking-item::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 0;
+        background: linear-gradient(90deg, rgba(219, 39, 119, 0.1), transparent);
+        transition: width 0.3s ease;
     }
     
     .ranking-item:hover {
-        background: rgba(255, 255, 255, 0.98);
+        background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(252,231,243,0.9) 100%);
         border-color: rgba(219, 39, 119, 0.25);
-        transform: translateX(4px);
+        transform: translateX(6px);
+        box-shadow: 0 4px 16px rgba(219, 39, 119, 0.1);
+    }
+    
+    .ranking-item:hover::before {
+        width: 4px;
     }
     
     .trend-up {
@@ -472,23 +663,35 @@ CSS_STYLES = """
 
 st.markdown(CSS_STYLES, unsafe_allow_html=True)
 
-# Botón de limpieza de caché (parte superior)
-col_cache_left, col_cache_right = st.columns([6, 1])
-with col_cache_right:
-    if st.button("Limpiar caché", use_container_width=True):
-        st.cache_data.clear()
-        st.rerun()
-
-# Aplicar fondo si existe
+# Aplicar fondo con overlay para mejor contraste
 if bg_base64:
     st.markdown(f"""
     <style>
         .stApp {{
-            background-image: url("data:image/png;base64,{bg_base64}");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background-image: 
+                linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(252,231,243,0.75) 50%, rgba(255,255,255,0.85) 100%),
+                url("data:image/png;base64,{bg_base64}");
+            background-size: cover, cover;
+            background-position: center, center;
+            background-attachment: fixed, fixed;
         }}
+    </style>
+    """, unsafe_allow_html=True)
+else:
+    # Fondo sutil cuando no hay imagen
+    st.markdown("""
+    <style>
+        .stApp {
+            background: linear-gradient(135deg, #fdf2f8 0%, #faf5ff 25%, #f0f9ff 50%, #faf5ff 75%, #fdf2f8 100%);
+            background-size: 400% 400%;
+            animation: gradient-shift 15s ease infinite;
+        }
+        
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
     </style>
     """, unsafe_allow_html=True)
 
@@ -907,23 +1110,36 @@ def get_image_base64(image_path):
         return base64.b64encode(img_file.read()).decode()
 
 with st.sidebar:
-    # Logo NO ROBOT
+    # Logo NO ROBOT con efecto premium
     logo_path = Path(__file__).parent / "assets" / "logo.png"
     if logo_path.exists():
         logo_base64 = get_image_base64(logo_path)
         st.markdown(f"""
-        <div style="text-align: center; padding: 20px 10px; margin-bottom: 20px; 
-                    border-bottom: 1px solid rgba(219, 39, 119, 0.15);">
+        <div style="text-align: center; padding: 24px 10px; margin-bottom: 24px; 
+                    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(252,231,243,0.7) 100%);
+                    border-radius: 20px;
+                    border: 1px solid rgba(219, 39, 119, 0.1);
+                    box-shadow: 0 4px 16px rgba(219, 39, 119, 0.08);">
             <img src="data:image/png;base64,{logo_base64}" 
-                 style="max-width: 180px; height: auto; margin-bottom: 8px;">
-            <p style="color: #9ca3af; font-size: 0.75rem; margin: 0;">Consumer Insights</p>
+                 style="max-width: 160px; height: auto; margin-bottom: 10px; 
+                        filter: drop-shadow(0 2px 4px rgba(219, 39, 119, 0.15));">
+            <p style="color: #9ca3af; font-size: 0.7rem; margin: 0; text-transform: uppercase; 
+                      letter-spacing: 2px; font-weight: 600;">Consumer Insights</p>
         </div>
         """, unsafe_allow_html=True)
     else:
         st.markdown("""
-        <div class="logo-container">
-            <div class="logo-text">NO ROBOT</div>
-            <p style="color: #9ca3af; font-size: 0.8rem; margin-top: 4px;">Consumer Insights</p>
+        <div style="text-align: center; padding: 24px 10px; margin-bottom: 24px; 
+                    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(252,231,243,0.7) 100%);
+                    border-radius: 20px;
+                    border: 1px solid rgba(219, 39, 119, 0.1);
+                    box-shadow: 0 4px 16px rgba(219, 39, 119, 0.08);">
+            <div style="font-size: 1.4rem; font-weight: 800; 
+                        background: linear-gradient(135deg, #db2777, #9333ea);
+                        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+                        letter-spacing: 3px;">NO ROBOT</div>
+            <p style="color: #9ca3af; font-size: 0.7rem; margin-top: 6px; text-transform: uppercase; 
+                      letter-spacing: 2px; font-weight: 600;">Consumer Insights</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -1074,6 +1290,13 @@ with st.sidebar:
         </p>
     </div>
     """, unsafe_allow_html=True)
+    
+    # Botón de limpiar caché al final del sidebar
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("---")
+    if st.button("🗑️ Limpiar caché", use_container_width=True, help="Actualiza los datos desde los archivos"):
+        st.cache_data.clear()
+        st.rerun()
 
 # ============================================================================
 # APLICAR FILTROS (MULTI-SELECT)

@@ -134,7 +134,10 @@ CSS_STYLES = """
         margin: 12px 0;
         box-shadow: 0 4px 24px rgba(219, 39, 119, 0.08);
         transition: all 0.3s ease;
-        min-height: auto;
+        min-height: 180px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
     
     .glass-card:hover {
@@ -681,6 +684,10 @@ def normalize_restaurant_name(name):
         'tacos joven': 'Tacos Joven',
         'sushito': 'Sushito',
         'han sushi': 'Han Sushi',
+        
+        # El Matador
+        'matador': 'El Matador',
+        'el matador': 'El Matador',
     }
     
     # Buscar coincidencia exacta

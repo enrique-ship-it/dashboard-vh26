@@ -543,27 +543,13 @@ CSS_STYLES = """
         z-index: 1000 !important;
     }
     
-    /* Estilizar el botón de colapsar/expandir sidebar */
+    /* Deshabilitar botón de colapsar sidebar */
     [data-testid="collapsedControl"] {
-        background: rgba(255, 255, 255, 0.9) !important;
-        border-radius: 0 12px 12px 0 !important;
-        border: 1px solid rgba(219, 39, 119, 0.15) !important;
-        box-shadow: 0 2px 8px rgba(219, 39, 119, 0.1) !important;
-        position: fixed !important;
-        top: 12px !important;
-        left: 0 !important;
-        z-index: 1001 !important;
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        width: 44px !important;
-        height: 44px !important;
-    }
-    
-    [data-testid="collapsedControl"]:hover {
-        background: rgba(255, 255, 255, 1) !important;
-        border-color: rgba(219, 39, 119, 0.3) !important;
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        width: 0 !important;
+        height: 0 !important;
     }
     
     ::-webkit-scrollbar {
@@ -1268,7 +1254,8 @@ with st.sidebar:
     st.markdown("---")
     
     st.markdown("#### 🎯 Filtros")
-    st.caption("Los filtros están en el panel principal")
+    st.caption("Puedes seleccionar varios valores por filtro")
+    filter_edad, filter_zona, filter_gasto, filter_freq, active_filters = render_filters()
     st.markdown("---")
     
     # Info del dataset
@@ -1294,13 +1281,6 @@ with st.sidebar:
     if st.button("🗑️ Limpiar caché", use_container_width=True, help="Actualiza los datos desde los archivos"):
         st.cache_data.clear()
         st.rerun()
-
-# ============================================================================
-# FILTROS EN PANEL PRINCIPAL (siempre visibles)
-# ============================================================================
-with st.expander("🎯 Filtros", expanded=False):
-    st.caption("Puedes seleccionar varios valores por filtro")
-    filter_edad, filter_zona, filter_gasto, filter_freq, active_filters = render_filters()
 
 # ============================================================================
 # APLICAR FILTROS (MULTI-SELECT)

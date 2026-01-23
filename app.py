@@ -88,8 +88,8 @@ st.set_page_config(
 # CARGAR FONDO COMO BASE64
 # ============================================================================
 def get_bg_image():
-    # Usar Fondo 4.png de NR Imagen
-    bg_path = Path("/Users/enrique/Documents/Proyectos/NR Imagen/Fondo 4.png")
+    # Usar Fondo 1.png de NR Imagen
+    bg_path = Path("/Users/enrique/Documents/Proyectos/NR Imagen/Fondo 1.png")
     if bg_path.exists():
         with open(bg_path, "rb") as f:
             return base64.b64encode(f.read()).decode()
@@ -181,9 +181,10 @@ CSS_STYLES = """
         box-shadow: 
             0 10px 40px rgba(219, 39, 119, 0.15),
             0 4px 12px rgba(0, 0, 0, 0.06),
-            inset -1px 0 0 rgba(255, 255, 255, 0.6),
-            inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
-        border: 1px solid rgba(255, 255, 255, 0.4) !important;
+            inset 3px 3px 8px rgba(255, 255, 255, 0.8),
+            inset -3px -3px 8px rgba(0, 0, 0, 0.12),
+            inset -1px -1px 3px rgba(255, 255, 255, 0.6) !important;
+        border: none !important;
         animation: fadeInUp 0.5s ease-out !important;
     }
     
@@ -202,13 +203,13 @@ CSS_STYLES = """
     
     section[data-testid="stSidebar"] > div:first-child::-webkit-scrollbar-track {
         background: rgba(219, 39, 119, 0.05) !important;
-        border-radius: 10px !important;
+        border-radius: 20px !important;
         margin: 8px 0 !important;
     }
     
     section[data-testid="stSidebar"] > div:first-child::-webkit-scrollbar-thumb {
         background: linear-gradient(180deg, #db2777, #9333ea) !important;
-        border-radius: 10px !important;
+        border-radius: 20px !important;
         border: 2px solid rgba(255, 255, 255, 0.3) !important;
     }
     
@@ -273,20 +274,24 @@ CSS_STYLES = """
         width: 100% !important;
     }
     
-    /* LIQUID GLASS CARDS - Estilo macOS */
+    /* LIQUID GLASS CARDS - Estilo vidrio polarizado translúcido */
     .glass-card {
-        background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.65) 100%);
-        backdrop-filter: blur(30px) saturate(200%);
-        -webkit-backdrop-filter: blur(30px) saturate(200%);
+        background: linear-gradient(135deg, 
+            rgba(255,255,255,0.45) 0%, 
+            rgba(0,0,0,0.08) 50%,
+            rgba(255,255,255,0.40) 100%);
+        backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
+        -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
         border-radius: 24px;
-        border: 1.5px solid rgba(255, 255, 255, 0.7);
+        border: none;
         padding: 24px 26px;
         margin: 12px 0;
         box-shadow: 
-            0 8px 32px rgba(219, 39, 119, 0.12),
-            0 2px 8px rgba(0, 0, 0, 0.04),
-            inset 0 1px 0 rgba(255, 255, 255, 0.9),
-            inset 0 -1px 1px rgba(219, 39, 119, 0.06);
+            0 8px 32px rgba(0, 0, 0, 0.15),
+            0 2px 8px rgba(0, 0, 0, 0.08),
+            inset 2px 2px 6px rgba(255, 255, 255, 0.7),
+            inset -2px -2px 6px rgba(0, 0, 0, 0.15),
+            inset -1px -1px 2px rgba(255, 255, 255, 0.5);
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
@@ -300,8 +305,8 @@ CSS_STYLES = """
         left: 0;
         right: 0;
         height: 2px;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
-        opacity: 0.8;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+        opacity: 0.6;
     }
     
     .glass-card::after {
@@ -311,47 +316,51 @@ CSS_STYLES = """
         left: -50%;
         width: 200%;
         height: 200%;
-        background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%);
+        background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.12) 50%, transparent 60%);
         animation: shimmer 6s infinite;
         pointer-events: none;
     }
     
     .glass-card:hover {
         transform: translateY(-6px) scale(1.01);
+        background: linear-gradient(135deg, 
+            rgba(255,255,255,0.55) 0%, 
+            rgba(0,0,0,0.05) 50%,
+            rgba(255,255,255,0.50) 100%);
         box-shadow: 
-            0 16px 48px rgba(219, 39, 119, 0.18),
-            0 4px 12px rgba(0, 0, 0, 0.06),
-            inset 0 1px 0 rgba(255, 255, 255, 1),
-            inset 0 -1px 1px rgba(219, 39, 119, 0.08);
-        border-color: rgba(219, 39, 119, 0.3);
-        animation: glowPulse 2s infinite;
+            0 16px 48px rgba(0, 0, 0, 0.20),
+            0 4px 12px rgba(0, 0, 0, 0.10),
+            inset 0 1px 0 rgba(255, 255, 255, 0.7),
+            inset 0 -1px 1px rgba(0, 0, 0, 0.12);
+        border-color: rgba(255, 255, 255, 0.5);
     }
     
-    /* KPI CARDS - Liquid Glass Premium */
+    /* KPI CARDS - Liquid Glass Premium (sin movimiento) */
     .kpi-card {
         background: linear-gradient(135deg, 
-            rgba(255,255,255,0.95) 0%, 
-            rgba(252,231,243,0.85) 50%,
-            rgba(255,255,255,0.90) 100%);
-        backdrop-filter: blur(30px) saturate(200%);
-        -webkit-backdrop-filter: blur(30px) saturate(200%);
+            rgba(255,255,255,0.35) 0%, 
+            rgba(0,0,0,0.05) 50%,
+            rgba(255,255,255,0.30) 100%);
+        backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
+        -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
         border-radius: 28px;
-        border: 1.5px solid rgba(255, 255, 255, 0.7);
+        border: none;
         padding: 32px 28px;
         text-align: center;
         transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: 
-            0 10px 40px rgba(219, 39, 119, 0.15),
+            0 10px 40px rgba(0, 0, 0, 0.08),
             0 4px 12px rgba(0, 0, 0, 0.05),
-            inset 0 2px 4px rgba(255, 255, 255, 0.9),
-            inset 0 -2px 4px rgba(219, 39, 119, 0.08);
+            inset 2px 2px 6px rgba(255, 255, 255, 0.7),
+            inset -2px -2px 6px rgba(0, 0, 0, 0.15),
+            inset -1px -1px 2px rgba(255, 255, 255, 0.5);
         min-height: 160px;
         display: flex;
         flex-direction: column;
         justify-content: center;
         position: relative;
         overflow: hidden;
-        animation: fadeInUp 0.6s ease-out, liquidFloat 4s ease-in-out infinite;
+        animation: fadeInUp 0.6s ease-out;
     }
     
     .kpi-card::before {
@@ -441,34 +450,28 @@ CSS_STYLES = """
         opacity: 0.9;
     }
     
-    /* SECTION TITLE - Liquid Glass */
+    /* SECTION TITLE - Vidrio polarizado translúcido */
     .section-title {
         font-size: 1.4rem;
         font-weight: 700;
         color: #1f2937;
         margin: 48px 0 24px 0;
         padding: 16px 22px;
-        border-left: 5px solid #db2777;
         background: linear-gradient(135deg, 
-            rgba(255,255,255,0.85) 0%, 
-            rgba(219, 39, 119, 0.08) 50%,
-            transparent 100%);
-        backdrop-filter: blur(20px);
-        border-radius: 0 16px 16px 0;
+            rgba(255,255,255,0.40) 0%, 
+            rgba(0,0,0,0.06) 40%,
+            rgba(255,255,255,0.35) 100%);
+        backdrop-filter: blur(35px) saturate(180%) brightness(1.1);
+        -webkit-backdrop-filter: blur(35px) saturate(180%) brightness(1.1);
+        border-radius: 28px;
         position: relative;
-        box-shadow: 0 4px 16px rgba(219, 39, 119, 0.08);
+        box-shadow: 
+            0 6px 24px rgba(0, 0, 0, 0.12),
+            0 2px 8px rgba(0, 0, 0, 0.08),
+            inset 2px 2px 5px rgba(255, 255, 255, 0.65),
+            inset -2px -2px 5px rgba(0, 0, 0, 0.12),
+            inset -1px -1px 2px rgba(255, 255, 255, 0.4);
         animation: fadeInUp 0.5s ease-out;
-    }
-    
-    .section-title::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 5px;
-        height: 100%;
-        background: linear-gradient(180deg, #db2777, #9333ea);
-        border-radius: 0 4px 4px 0;
     }
     
     .section-title::after {
@@ -477,9 +480,9 @@ CSS_STYLES = """
         bottom: -1px;
         left: 0;
         right: 0;
-        height: 2px;
+        height: 1px;
         background: linear-gradient(90deg, rgba(219, 39, 119, 0.3), transparent);
-        border-radius: 2px;
+        opacity: 0.5;
     }
     
     
@@ -699,7 +702,7 @@ CSS_STYLES = """
         background: linear-gradient(135deg, #fce7f3 0%, #f5d0fe 100%) !important;
         border: 1px solid rgba(219, 39, 119, 0.3) !important;
         color: #831843 !important;
-        border-radius: 10px !important;
+        border-radius: 20px !important;
         padding: 6px 12px !important;
     }
     
@@ -743,33 +746,55 @@ CSS_STYLES = """
     /* RADIO BUTTONS - Liquid Glass */
     .stRadio > div {
         background: linear-gradient(135deg, 
-            rgba(255,255,255,0.85) 0%, 
-            rgba(252,231,243,0.7) 100%) !important;
-        backdrop-filter: blur(20px) saturate(180%) !important;
-        border-radius: 18px !important;
-        padding: 10px 14px !important;
-        border: 1.5px solid rgba(219, 39, 119, 0.15) !important;
-        gap: 10px !important;
-        box-shadow: 0 4px 16px rgba(219, 39, 119, 0.08) !important;
+            rgba(255,255,255,0.35) 0%, 
+            rgba(0,0,0,0.05) 50%,
+            rgba(255,255,255,0.30) 100%) !important;
+        backdrop-filter: blur(40px) saturate(200%) brightness(1.1) !important;
+        -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.1) !important;
+        border-radius: 28px !important;
+        padding: 8px !important;
+        border: none !important;
+        gap: 8px !important;
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.12),
+            0 2px 8px rgba(0, 0, 0, 0.06),
+            inset 2px 2px 6px rgba(255, 255, 255, 0.7),
+            inset -2px -2px 6px rgba(0, 0, 0, 0.12) !important;
     }
     
     .stRadio label {
         background: transparent !important;
-        padding: 12px 20px !important;
-        border-radius: 12px !important;
-        transition: all 0.3s ease !important;
+        padding: 14px 24px !important;
+        border-radius: 22px !important;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
         font-weight: 500 !important;
+        font-size: 0.95rem !important;
+        color: #1f2937 !important;
+        border: none !important;
     }
     
     .stRadio label:hover {
-        background: rgba(219, 39, 119, 0.1) !important;
+        background: linear-gradient(135deg,
+            rgba(255,255,255,0.6) 0%,
+            rgba(255,255,255,0.5) 100%) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 
+            0 4px 12px rgba(0, 0, 0, 0.08),
+            inset 1px 1px 3px rgba(255, 255, 255, 0.8) !important;
     }
     
     .stRadio label[data-checked="true"] {
-        background: rgba(255,255,255,0.95) !important;
-        box-shadow: 0 4px 16px rgba(219, 39, 119, 0.2) !important;
+        background: linear-gradient(135deg, 
+            rgba(255,255,255,0.85) 0%, 
+            rgba(255,255,255,0.75) 100%) !important;
+        box-shadow: 
+            0 6px 20px rgba(219, 39, 119, 0.15),
+            0 2px 6px rgba(0, 0, 0, 0.08),
+            inset 2px 2px 5px rgba(255, 255, 255, 0.9),
+            inset -2px -2px 5px rgba(0, 0, 0, 0.08) !important;
         font-weight: 600 !important;
-        border: 1px solid rgba(219, 39, 119, 0.2) !important;
+        transform: translateY(-2px) !important;
+        border: none !important;
     }
     
     /* DATAFRAME & METRICS */
@@ -802,13 +827,13 @@ CSS_STYLES = """
     
     ::-webkit-scrollbar-track {
         background: rgba(219, 39, 119, 0.05);
-        border-radius: 10px;
+        border-radius: 20px;
         margin: 4px;
     }
     
     ::-webkit-scrollbar-thumb {
         background: linear-gradient(180deg, rgba(219, 39, 119, 0.4), rgba(147, 51, 234, 0.4));
-        border-radius: 10px;
+        border-radius: 20px;
         border: 2px solid rgba(255, 255, 255, 0.3);
     }
     
@@ -823,7 +848,7 @@ CSS_STYLES = """
         margin-bottom: 24px;
         border-bottom: 1.5px solid rgba(219, 39, 119, 0.15);
         background: linear-gradient(180deg, rgba(255,255,255,0.5), transparent);
-        border-radius: 16px 16px 0 0;
+        border-radius: 24px 24px 0 0;
     }
     
     .logo-text {
@@ -1757,7 +1782,7 @@ if selected_page == "📈 Resumen Ejecutivo":
             yaxis=dict(showgrid=False, tickfont=dict(size=13, color='#374151'))
         )
         
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
     
     with col_right:
         st.markdown('<div class="section-title">Hallazgos principales</div>', unsafe_allow_html=True)
@@ -1930,7 +1955,7 @@ elif selected_page == "👥 Perfil del Consumidor":
                 legend=dict(font=dict(color='#374151'))
             )
             fig.update_traces(textfont=dict(color='#374151'))
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
     
     with col2:
         if col_gasto in df_filtered.columns:
@@ -1950,7 +1975,7 @@ elif selected_page == "👥 Perfil del Consumidor":
                 legend=dict(font=dict(color='#374151'))
             )
             fig.update_traces(textfont=dict(color='#374151'))
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
     
     # Matriz cruzada
     st.markdown('<div class="section-title">¿Cómo se relaciona la edad con el gasto?</div>', unsafe_allow_html=True)
@@ -1976,7 +2001,7 @@ elif selected_page == "👥 Perfil del Consumidor":
             xaxis_title="Gasto por persona",
             yaxis_title="Rango de edad"
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
     
     # Top zonas
     st.markdown('<div class="section-title">¿De dónde vienen los encuestados?</div>', unsafe_allow_html=True)
@@ -2003,7 +2028,7 @@ elif selected_page == "👥 Perfil del Consumidor":
             yaxis_title="",
             coloraxis_showscale=False
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
     
     # ========== NUEVA SECCIÓN: Perfil de Consumo ==========
     st.markdown('<div class="section-title">💡 Perfil de Consumo</div>', unsafe_allow_html=True)
@@ -2266,7 +2291,7 @@ elif selected_page == "🔬 Análisis Detallado":
                     yaxis=dict(showgrid=True, gridcolor='rgba(219, 39, 119, 0.1)')
                 )
                 
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
                 
                 # Tabla con datos GMB
                 st.markdown("#### 📍 Validación con Google Maps")

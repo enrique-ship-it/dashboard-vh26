@@ -116,12 +116,9 @@ CSS_STYLES = """
     /* Ocultar iconos flotantes de esquina inferior */
     .stActionButton {display: none !important;}
     [data-testid="manage-app-button"] {display: none !important;}
-    .st-emotion-cache-zq5wmm {display: none !important;}
-    .st-emotion-cache-1dp5vir {display: none !important;}
     iframe[title="streamlit_feedback.st_feedback"] {display: none !important;}
     div[data-testid="stStatusWidget"] {display: none !important;}
     button[kind="icon"] {display: inline-flex !important;}
-    .stApp > div:last-child > div:last-child > div:last-child {display: none !important;}
     
     /* Animaciones globales */
     @keyframes fadeInUp {

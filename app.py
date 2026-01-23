@@ -1180,77 +1180,113 @@ if selected_page == "📈 Resumen Ejecutivo":
     with col_right:
         st.markdown('<div class="section-title">Hallazgos principales</div>', unsafe_allow_html=True)
         
-        st.markdown(f"""
-        <div class="alert-success">
-            <strong>🏆 El favorito de la ciudad</strong><br>
-            <span style="font-size: 1.15rem; font-weight: 600;">{top_restaurant[0]}</span> lidera 
-            las preferencias con <strong>{top_restaurant[1]}</strong> menciones. Los tabasqueños 
-            lo asocian con celebraciones especiales y cortes de carne.
-        </div>
-        """, unsafe_allow_html=True)
+        # Contexto dinámico según filtros
+        filtro_activo = []
+        if filter_edad:
+            filtro_activo.append(f"edad: {', '.join(filter_edad)}")
+        if filter_zona:
+            filtro_activo.append(f"zona: {', '.join(filter_zona[:2])}{'...' if len(filter_zona) > 2 else ''}")
+        contexto_filtro = f" para el segmento ({'; '.join(filtro_activo)})" if filtro_activo else ""
         
-        if 'De Moda' in leaders and leaders['De Moda']:
-            moda_leader = leaders['De Moda'][0]
+        # 1. El favorito - siempre dinámico
+        if top_restaurant[0] != "N/A":
+            # Obtener datos de Google si existen
+            gmb_match = match_gmb(top_restaurant[0], df_gmb) if 'match_gmb' in dir() else None
+            google_info = ""
+            if gmb_match is not None:
+                google_info = f" Google lo respalda con ⭐{gmb_match['rating']}."
+            
             st.markdown(f"""
-            <div class="alert-info">
-                <strong>📈 En boca de todos</strong><br>
-                <span style="font-weight: 600;">{moda_leader[0]}</span> está ganando 
-                popularidad rápidamente ({moda_leader[1]} menciones como "de moda"). 
-                Vale la pena observar qué están haciendo bien.
+            <div class="alert-success">
+                <strong>🏆 El favorito{contexto_filtro}</strong><br>
+                <span style="font-size: 1.15rem; font-weight: 600;">{top_restaurant[0]}</span> lidera 
+                con <strong>{top_restaurant[1]}</strong> menciones ({round(top_restaurant[1]/len(df_filtered)*100, 1) if len(df_filtered) > 0 else 0}% de los encuestados).{google_info}
             </div>
             """, unsafe_allow_html=True)
         
-        if 'En Declive' in leaders and leaders['En Declive']:
-            # Filtrar respuestas inválidas
-            valid_decline = [(n, c) for n, c in leaders['En Declive'] if n.lower() not in ['no', 'ninguno', 'no sé', 'ns']]
-            if valid_decline:
-                decline_leader = valid_decline[0]
+        # 2. Concentración del mercado - insight útil
+        if len(mentions) >= 3:
+            top_3 = mentions.most_common(3)
+            top_3_total = sum([x[1] for x in top_3])
+            total_menciones = sum(mentions.values())
+            concentracion = round(top_3_total / total_menciones * 100) if total_menciones > 0 else 0
+            
+            # Determinar nivel de concentración
+            if concentracion >= 40:
+                nivel = "alta"
+                color_class = "alert-danger"
+                icon = "📊"
+                insight = "El mercado está muy concentrado. Pocos dominan las preferencias."
+            elif concentracion >= 25:
+                nivel = "moderada"
+                color_class = "alert-info"
+                icon = "📈"
+                insight = "Hay líderes claros pero espacio para competir."
+            else:
+                nivel = "baja"
+                color_class = "alert-success"
+                icon = "🎯"
+                insight = "Mercado fragmentado = oportunidad para diferenciarse."
+            
+            top_3_names = ", ".join([x[0] for x in top_3])
+            st.markdown(f"""
+            <div class="{color_class}">
+                <strong>{icon} Concentración {nivel}</strong><br>
+                El Top 3 (<strong>{top_3_names}</strong>) acapara el <strong>{concentracion}%</strong> de las menciones. {insight}
+            </div>
+            """, unsafe_allow_html=True)
+        
+        # 3. Tendencia - De Moda vs En Declive
+        moda_names = set()
+        declive_names = set()
+        
+        if 'De Moda' in leaders and leaders['De Moda']:
+            valid_moda = [(n, c) for n, c in leaders['De Moda'] if len(n) > 3 and n.lower() not in ['no', 'ninguno', 'no sé', 'ns', 'no responde', 'no respondió']]
+            if valid_moda:
+                moda_leader = valid_moda[0]
+                moda_names.add(moda_leader[0])
                 st.markdown(f"""
-                <div class="alert-danger">
-                    <strong>⚠️ Atención: Percepción en declive</strong><br>
-                    <span style="font-weight: 600;">{decline_leader[0]}</span> fue mencionado 
-                    {decline_leader[1]} veces como restaurante que "ya no está de moda". 
-                    Esto puede indicar fatiga de marca o necesidad de reinvención.
+                <div class="alert-info">
+                    <strong>📈 En ascenso</strong><br>
+                    <span style="font-weight: 600;">{moda_leader[0]}</span> está ganando popularidad 
+                    ({moda_leader[1]} menciones como "de moda"). Observa qué están haciendo bien.
                 </div>
                 """, unsafe_allow_html=True)
         
-        # Oportunidad de mercado DINÁMICA basada en filtros
+        if 'En Declive' in leaders and leaders['En Declive']:
+            valid_decline = [(n, c) for n, c in leaders['En Declive'] if len(n) > 3 and n.lower() not in ['no', 'ninguno', 'no sé', 'ns', 'no responde', 'no respondió']]
+            if valid_decline:
+                decline_leader = valid_decline[0]
+                declive_names.add(decline_leader[0])
+                st.markdown(f"""
+                <div class="alert-danger">
+                    <strong>⚠️ En declive</strong><br>
+                    <span style="font-weight: 600;">{decline_leader[0]}</span> fue mencionado 
+                    {decline_leader[1]} veces como "ya no está de moda". Posible fatiga de marca.
+                </div>
+                """, unsafe_allow_html=True)
+        
+        # 4. Oportunidad de mercado - qué hace falta
         col_falta = "11. ¿Qué tipo de restaurante o experiencia consideras que hacen falta o están poco desarrollados en Villahermosa?"
         if col_falta in df_filtered.columns:
             falta_data = df_filtered[col_falta].dropna().astype(str)
-            falta_data = falta_data[~falta_data.isin(['No responde', 'No Respondió', 'No Respondio', 'No sé', 'Ninguno', 'No'])]
+            # Filtrar respuestas inválidas y muy cortas
+            falta_data = falta_data[
+                (~falta_data.str.lower().isin(['no responde', 'no respondió', 'no respondio', 'no sé', 'ninguno', 'no', 'na', 'n/a'])) & 
+                (falta_data.str.len() > 3)
+            ]
             if len(falta_data) > 0:
                 falta_counts = Counter(falta_data)
-                top_falta = falta_counts.most_common(3)
+                top_falta = falta_counts.most_common(2)
                 
-                # Construir mensaje dinámico
-                if len(top_falta) >= 2:
-                    oportunidades = f"<strong>{top_falta[0][0]}</strong> ({top_falta[0][1]} menciones) y <strong>{top_falta[1][0]}</strong> ({top_falta[1][1]} menciones)"
-                elif len(top_falta) == 1:
-                    oportunidades = f"<strong>{top_falta[0][0]}</strong> ({top_falta[0][1]} menciones)"
-                else:
-                    oportunidades = "nuevas experiencias gastronómicas"
-                
-                # Contexto según filtros activos
-                contexto = "Los encuestados"
-                if filter_edad:
-                    edades = ", ".join(filter_edad)
-                    contexto = f"El segmento de <strong>{edades}</strong>"
-                
-                st.markdown(f"""
-                <div class="alert-warning">
-                    <strong>💡 Oportunidad de mercado</strong><br>
-                    {contexto} señalan que hace falta {oportunidades} en la ciudad. 
-                    Un nicho con potencial de crecimiento.
-                </div>
-                """, unsafe_allow_html=True)
-            else:
-                st.markdown("""
-                <div class="alert-warning">
-                    <strong>💡 Oportunidad de mercado</strong><br>
-                    Aplica filtros para descubrir qué oportunidades detecta cada segmento demográfico.
-                </div>
-                """, unsafe_allow_html=True)
+                if top_falta:
+                    oportunidades = " y ".join([f"<strong>{item[0]}</strong> ({item[1]})" for item in top_falta])
+                    st.markdown(f"""
+                    <div class="alert-warning">
+                        <strong>💡 Oportunidad detectada</strong><br>
+                        Los encuestados piden: {oportunidades}. Nichos con potencial de crecimiento.
+                    </div>
+                    """, unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
     

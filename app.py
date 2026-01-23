@@ -12,6 +12,7 @@ from collections import Counter
 import base64
 import random
 import re
+import os
 from pathlib import Path
 
 # ============================================================================
@@ -466,7 +467,7 @@ if bg_base64:
 # FUNCIONES DE CARGA DE DATOS
 # ============================================================================
 @st.cache_data
-def load_encuestas():
+def load_encuestas(data_mtime):
     """Carga datos de encuestas"""
     df = pd.read_csv('data_encuestas.csv', encoding='utf-8-sig')
     return df
@@ -814,7 +815,8 @@ def match_gmb(restaurant_name, gmb_df):
 # CARGA DE DATOS
 # ============================================================================
 try:
-    df_encuestas = load_encuestas()
+    encuestas_path = Path(__file__).parent / "data_encuestas.csv"
+    df_encuestas = load_encuestas(os.path.getmtime(encuestas_path))
     df_gmb = load_gmb()
     data_loaded = True
 except Exception as e:

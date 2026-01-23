@@ -489,7 +489,7 @@ def get_restaurant_mentions(df):
                 'Bar', 'Bufete', 'Está de moda', 'Ya no está de moda:', 'Celebraciones']
     invalid_mentions = {
         '1', 'No responde', 'No respondió', 'No respondio', 'No sé',
-        'No se', 'No', 'Ninguno', 'N/A', 'Na'
+        'No se', 'No', 'Ninguno', 'N/A', 'Na', 'No Respondió', 'No Respondio'
     }
     split_pattern = re.compile(r'\s*(?:/|,|;|\by\b|&|\+)\s*', re.IGNORECASE)
     
@@ -691,7 +691,7 @@ def get_category_leaders(df):
     leaders = {}
     invalid_mentions = {
         '1', 'No responde', 'No respondió', 'No respondio', 'No sé',
-        'No se', 'No', 'Ninguno', 'N/A', 'Na'
+        'No se', 'No', 'Ninguno', 'N/A', 'Na', 'No Respondió', 'No Respondio'
     }
     split_pattern = re.compile(r'\s*(?:/|,|;|\by\b|&|\+)\s*', re.IGNORECASE)
     for name, col in categories.items():
@@ -699,7 +699,7 @@ def get_category_leaders(df):
             vals = df[col].dropna().astype(str)
             vals = vals[~vals.isin([
                 '1', 'No responde', 'No respondió', 'No respondio', 'No sé',
-                'No se', 'No', 'Ninguno', 'N/A', 'Na'
+                'No se', 'No', 'Ninguno', 'N/A', 'Na', 'No Respondió', 'No Respondio'
             ])]
             normalized_vals = []
             for raw_val in vals.tolist():

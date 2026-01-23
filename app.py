@@ -88,9 +88,15 @@ st.set_page_config(
 # CARGAR FONDO COMO BASE64
 # ============================================================================
 def get_bg_image():
-    bg_path = Path(__file__).parent / "assets" / "fondo1.png"
+    # Usar Fondo 4.png de NR Imagen
+    bg_path = Path("/Users/enrique/Documents/Proyectos/NR Imagen/Fondo 4.png")
     if bg_path.exists():
         with open(bg_path, "rb") as f:
+            return base64.b64encode(f.read()).decode()
+    # Fallback al fondo original
+    bg_path_fallback = Path(__file__).parent / "assets" / "fondo1.png"
+    if bg_path_fallback.exists():
+        with open(bg_path_fallback, "rb") as f:
             return base64.b64encode(f.read()).decode()
     return None
 
@@ -106,7 +112,8 @@ CSS_STYLES = """
     /* Ocultar elementos de Streamlit/GitHub */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-    header {visibility: visible;}
+    header {visibility: hidden !important;}
+    [data-testid="stHeader"] {display: none !important;}
     .stDeployButton {display: none !important;}
     [data-testid="stToolbar"] {display: none !important;}
     .viewerBadge_container__r5tak {display: none !important;}
@@ -116,6 +123,15 @@ CSS_STYLES = """
     iframe[title="streamlit_feedback.st_feedback"] {display: none !important;}
     div[data-testid="stStatusWidget"] {display: none !important;}
     button[kind="icon"] {display: inline-flex !important;}
+    
+    /* Quitar padding superior del body */
+    .stApp {
+        padding-top: 0 !important;
+    }
+    
+    .main .block-container {
+        padding-top: 1rem !important;
+    }
     
     /* Animaciones globales estilo macOS */
     @keyframes fadeInUp {
@@ -146,17 +162,17 @@ CSS_STYLES = """
     
     /* SIDEBAR FLOTANTE ESTILO macOS WIDGETS */
     section[data-testid="stSidebar"] {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(253, 242, 248, 0.90) 100%) !important;
-        backdrop-filter: blur(40px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(253, 242, 248, 0.55) 100%) !important;
+        backdrop-filter: blur(40px) saturate(200%) !important;
+        -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
         visibility: visible !important;
         display: block !important;
         transform: translateX(0) !important;
-        width: 320px !important;
-        min-width: 320px !important;
-        max-width: 320px !important;
-        border-radius: 0 28px 28px 0 !important;
-        margin: 20px 0 20px 0 !important;
+        width: 300px !important;
+        min-width: 300px !important;
+        max-width: 300px !important;
+        border-radius: 28px !important;
+        margin: 20px !important;
         height: calc(100vh - 40px) !important;
         position: fixed !important;
         left: 0 !important;
@@ -167,8 +183,7 @@ CSS_STYLES = """
             0 4px 12px rgba(0, 0, 0, 0.06),
             inset -1px 0 0 rgba(255, 255, 255, 0.6),
             inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
-        border: 1px solid rgba(255, 255, 255, 0.5) !important;
-        border-left: none !important;
+        border: 1px solid rgba(255, 255, 255, 0.4) !important;
         animation: fadeInUp 0.5s ease-out !important;
     }
     
@@ -230,7 +245,7 @@ CSS_STYLES = """
 
     /* CONTENEDOR PRINCIPAL - Ajuste para sidebar flotante */
     [data-testid="stAppViewContainer"] {
-        padding-left: 360px !important; /* Espacio para sidebar flotante + margen */
+        padding-left: 340px !important; /* Espacio para sidebar flotante (300px + 40px márgenes) */
         margin-left: 0 !important;
     }
 
@@ -958,13 +973,13 @@ HIDE_SIDEBAR_LABEL_JS = """
 
 st.markdown(HIDE_SIDEBAR_LABEL_JS, unsafe_allow_html=True)
 
-# Aplicar fondo con overlay para mejor contraste
+# Aplicar fondo con overlay más sutil para mejor efecto liquid glass
 if bg_base64:
     st.markdown(f"""
     <style>
         .stApp {{
             background-image: 
-                linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(252,231,243,0.75) 50%, rgba(255,255,255,0.85) 100%),
+                linear-gradient(135deg, rgba(255,255,255,0.35) 0%, rgba(252,231,243,0.25) 50%, rgba(255,255,255,0.35) 100%),
                 url("data:image/png;base64,{bg_base64}");
             background-size: cover, cover;
             background-position: center, center;

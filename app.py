@@ -162,7 +162,12 @@ CSS_STYLES = """
     }
 
     /* Dejar espacio al contenido principal cuando el sidebar está visible */
+    [data-testid="stAppViewContainer"] > .main {
+        padding-top: 0 !important;
+    }
+
     .main .block-container {
+        margin-top: 0 !important;
         padding-top: 0 !important;
         padding-left: 340px !important;
         padding-right: 1.5rem !important;

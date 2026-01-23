@@ -169,6 +169,15 @@ CSS_STYLES = """
     
     [data-testid="stSidebar"] .stSelectbox label,
     [data-testid="stSidebar"] .stMultiSelect label {
+
+    /* Forzar sidebar visible aunque esté colapsado */
+    [data-testid="stSidebar"][aria-expanded="false"] {
+        transform: translateX(0) !important;
+        visibility: visible !important;
+        min-width: 20rem !important;
+        max-width: 20rem !important;
+        width: 20rem !important;
+    }
         color: #6b7280 !important;
         font-weight: 600 !important;
         font-size: 0.85rem !important;

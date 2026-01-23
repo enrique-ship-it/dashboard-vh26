@@ -1421,8 +1421,12 @@ elif selected_page == "🏆 Rankings por Categoría":
                     for j, (name, count) in enumerate(valid_data[:top_count]):
                         with cols[j]:
                             gmb_match = match_gmb(name, df_gmb)
-                            rating_text = f"⭐ {gmb_match['rating']}" if gmb_match is not None else "Sin datos GMB"
-                            reviews_text = f"{int(gmb_match['reviews']):,} reseñas" if gmb_match is not None else ""
+                            if gmb_match is not None:
+                                rating_text = f"⭐ {gmb_match['rating']}"
+                                reviews_text = f"{int(gmb_match['reviews']):,} reseñas"
+                            else:
+                                rating_text = "Sin datos GMB"
+                                reviews_text = "&nbsp;"  # Espacio para mantener altura
                             
                             st.markdown(f"""
                             <div class="glass-card" style="text-align: center;">

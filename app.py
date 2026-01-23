@@ -487,6 +487,16 @@ def get_restaurant_mentions(df):
     cat_cols = ['Mariscos', 'Carne', 'Hamburguesas', 'Pizzas', 'Sushi', 'Tacos', 
                 'Comida típica tabasqueña', 'Mexicana', 'Desayunos', 'Brunch', 
                 'Bar', 'Bufete', 'Está de moda', 'Ya no está de moda:', 'Celebraciones']
+    protected_phrases = {
+        'pescados y mariscos',
+        'mar & co',
+        'mar&co',
+        'mar y tierra',
+        'tortas y más tortas',
+        'chavo, kiko y ñoño',
+        'chavo kiko y ñoño',
+        'kiko y ñoño'
+    }
     invalid_mentions = {
         '1', 'No responde', 'No respondió', 'No respondio', 'No sé',
         'No se', 'No', 'Ninguno', 'N/A', 'Na', 'No Respondió', 'No Respondio'
@@ -499,7 +509,12 @@ def get_restaurant_mentions(df):
             vals = df[col].dropna().astype(str)
             vals = vals[~vals.isin(list(invalid_mentions))]
             for raw_val in vals.tolist():
-                parts = [p.strip() for p in split_pattern.split(str(raw_val)) if p and p.strip()]
+                raw_str = str(raw_val).strip()
+                raw_lower = raw_str.lower()
+                if raw_lower in protected_phrases:
+                    parts = [raw_str]
+                else:
+                    parts = [p.strip() for p in split_pattern.split(raw_str) if p and p.strip()]
                 for part in parts:
                     if part in invalid_mentions:
                         continue
@@ -689,6 +704,16 @@ def get_category_leaders(df):
     }
     
     leaders = {}
+    protected_phrases = {
+        'pescados y mariscos',
+        'mar & co',
+        'mar&co',
+        'mar y tierra',
+        'tortas y más tortas',
+        'chavo, kiko y ñoño',
+        'chavo kiko y ñoño',
+        'kiko y ñoño'
+    }
     invalid_mentions = {
         '1', 'No responde', 'No respondió', 'No respondio', 'No sé',
         'No se', 'No', 'Ninguno', 'N/A', 'Na', 'No Respondió', 'No Respondio'
@@ -703,7 +728,12 @@ def get_category_leaders(df):
             ])]
             normalized_vals = []
             for raw_val in vals.tolist():
-                parts = [p.strip() for p in split_pattern.split(str(raw_val)) if p and p.strip()]
+                raw_str = str(raw_val).strip()
+                raw_lower = raw_str.lower()
+                if raw_lower in protected_phrases:
+                    parts = [raw_str]
+                else:
+                    parts = [p.strip() for p in split_pattern.split(raw_str) if p and p.strip()]
                 for part in parts:
                     if part in invalid_mentions:
                         continue

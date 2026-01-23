@@ -1442,6 +1442,102 @@ elif selected_page == "👥 Perfil del Consumidor":
             coloraxis_showscale=False
         )
         st.plotly_chart(fig, use_container_width=True)
+    
+    # ========== NUEVA SECCIÓN: Perfil de Consumo ==========
+    st.markdown('<div class="section-title">💡 Perfil de Consumo</div>', unsafe_allow_html=True)
+    st.caption("Insights clave sobre cómo y cuándo consumen los participantes del estudio")
+    
+    col_ocasion = "9. ¿Cuál es tu ocasión de consumo más frecuente?"
+    col_relacion_gasto = "4. Pensando en tu día a día, ¿cuál de las siguientes frases describe mejor tu relación con el gasto en restaurantes?"
+    
+    col_oc1, col_oc2 = st.columns(2)
+    
+    with col_oc1:
+        # Ocasiones de consumo
+        if col_ocasion in df_filtered.columns:
+            ocasion_counts = df_filtered[col_ocasion].value_counts()
+            ocasion_counts = ocasion_counts[~ocasion_counts.index.isin(['No responde', 'No Respondió', 'No Respondio', 'no responde'])]
+            
+            # Mapear a iconos
+            ocasion_icons = {
+                'Comida familiar': '👨‍👩‍👧‍👦',
+                'Reunión con amigos': '👯',
+                'Cita en pareja': '💑',
+                'Negocio / trabajo': '💼',
+                'Solo(a)': '🧘',
+                'Celebración especial': '🎉',
+            }
+            
+            if len(ocasion_counts) > 0:
+                st.markdown("""
+                <div class="glass-card">
+                    <h4 style="color: #1f2937; margin-bottom: 15px;">🎯 ¿Cuándo van a comer fuera?</h4>
+                """, unsafe_allow_html=True)
+                
+                for ocasion, count in ocasion_counts.head(5).items():
+                    pct = count / len(df_filtered) * 100
+                    icon = ocasion_icons.get(ocasion, '🍽️')
+                    bar_width = min(pct * 2, 100)
+                    st.markdown(f"""
+                    <div style="margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                            <span style="color: #374151;">{icon} {ocasion}</span>
+                            <span style="color: #db2777; font-weight: 600;">{pct:.0f}%</span>
+                        </div>
+                        <div style="background: #f3f4f6; border-radius: 10px; height: 8px;">
+                            <div style="background: linear-gradient(90deg, #f9a8d4, #db2777); width: {bar_width}%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                st.markdown("</div>", unsafe_allow_html=True)
+    
+    with col_oc2:
+        # Relación con el gasto
+        if col_relacion_gasto in df_filtered.columns:
+            gasto_rel = df_filtered[col_relacion_gasto].value_counts()
+            gasto_rel = gasto_rel[~gasto_rel.index.isin(['No responde', 'No Respondió', 'No Respondio', 'no responde'])]
+            
+            # Mapear a etiquetas cortas
+            gasto_map = {
+                'Me gusta cuidar mi presupuesto, pero me doy gustos de vez en cuando.': ('🎯 Moderados', 'Cuidan presupuesto con gustos ocasionales'),
+                'No me preocupo por el precio si la experiencia lo vale.': ('💎 Experienciales', 'La experiencia vale más que el precio'),
+                'Solo como fuera en ocasiones especiales.': ('🎂 Ocasionales', 'Reservan para celebraciones'),
+                'Prefiero opciones económicas para comer fuera frecuentemente.': ('💰 Frecuentes', 'Opciones económicas para ir seguido'),
+            }
+            
+            if len(gasto_rel) > 0:
+                st.markdown("""
+                <div class="glass-card">
+                    <h4 style="color: #1f2937; margin-bottom: 15px;">💸 Mentalidad de gasto</h4>
+                """, unsafe_allow_html=True)
+                
+                total = gasto_rel.sum()
+                for frase, count in gasto_rel.items():
+                    pct = count / total * 100
+                    label, desc = gasto_map.get(frase, ('📊', frase[:40]))
+                    
+                    # Color según tipo
+                    if 'Moderados' in label:
+                        color = '#3b82f6'
+                    elif 'Experienciales' in label:
+                        color = '#8b5cf6'
+                    elif 'Ocasionales' in label:
+                        color = '#f59e0b'
+                    else:
+                        color = '#10b981'
+                    
+                    st.markdown(f"""
+                    <div style="margin-bottom: 14px; padding: 10px; background: {color}10; border-radius: 8px; border-left: 3px solid {color};">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: #1f2937; font-weight: 500;">{label}</span>
+                            <span style="color: {color}; font-weight: 700; font-size: 1.1rem;">{pct:.0f}%</span>
+                        </div>
+                        <div style="color: #6b7280; font-size: 0.8rem; margin-top: 4px;">{desc}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                st.markdown("</div>", unsafe_allow_html=True)
 
 # ============================================================================
 # PÁGINA 3: RANKINGS POR CATEGORÍA
@@ -2237,6 +2333,144 @@ elif selected_page == "📊 Tendencias":
         use_container_width=True,
         hide_index=True
     )
+    
+    # ========== NUEVA SECCIÓN: Marketing Digital ==========
+    st.markdown('<div class="section-title">📱 ¿Dónde alcanzar a tu cliente?</div>', unsafe_allow_html=True)
+    st.caption("Canales y contenido que más influyen en las decisiones de los consumidores")
+    
+    col_medios = "18. ¿A través de qué medios te enteras normalmente de promociones, ofertas o eventos de restaurantes en Villahermosa?"
+    col_contenido = "18.1 ¿Qué tipo de contenido en redes sociales te motiva más a visitar un restaurante?"
+    
+    col_mk1, col_mk2 = st.columns(2)
+    
+    with col_mk1:
+        if col_medios in df_filtered.columns:
+            # Separar respuestas múltiples por coma
+            medios_raw = df_filtered[col_medios].dropna().astype(str)
+            medios_list = []
+            for m in medios_raw:
+                medios_list.extend([x.strip() for x in m.split(',') if x.strip()])
+            
+            medios_counts = Counter(medios_list)
+            # Filtrar valores no válidos
+            invalid = ['no responde', 'no respondió', 'no respondio', 'no', 'ninguno', 'na', 'n/a', '1']
+            medios_counts = {k: v for k, v in medios_counts.items() if k.lower() not in invalid and len(k) > 2}
+            
+            if medios_counts:
+                # Mapear a iconos
+                canal_icons = {
+                    'Instagram': '📸',
+                    'Facebook': '📘',
+                    'TikTok': '🎵',
+                    'Recomendaciones de amigos/familiares': '👥',
+                    'Google Maps / búsqueda en Google': '🗺️',
+                    'WhatsApp': '💬',
+                    'Periódicos / revistas locales': '📰',
+                    'Radio': '📻',
+                }
+                
+                st.markdown("""
+                <div class="glass-card" style="border-left: 4px solid #e1306c;">
+                    <h4 style="color: #1f2937; margin-bottom: 15px;">📢 Canales de descubrimiento</h4>
+                    <p style="color: #6b7280; font-size: 0.8rem; margin-bottom: 15px;">Dónde se enteran de ofertas y promociones</p>
+                """, unsafe_allow_html=True)
+                
+                total_menciones = sum(medios_counts.values())
+                sorted_medios = sorted(medios_counts.items(), key=lambda x: x[1], reverse=True)[:6]
+                
+                for canal, count in sorted_medios:
+                    pct = count / total_menciones * 100
+                    icon = canal_icons.get(canal, '📌')
+                    
+                    # Colores por canal
+                    if 'Instagram' in canal:
+                        color = '#e1306c'
+                    elif 'Facebook' in canal:
+                        color = '#1877f2'
+                    elif 'TikTok' in canal:
+                        color = '#010101'
+                    elif 'Google' in canal:
+                        color = '#4285f4'
+                    elif 'WhatsApp' in canal:
+                        color = '#25d366'
+                    elif 'amigos' in canal.lower() or 'Recomendaciones' in canal:
+                        color = '#8b5cf6'
+                    else:
+                        color = '#6b7280'
+                    
+                    bar_width = min(pct * 1.5, 100)
+                    st.markdown(f"""
+                    <div style="margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                            <span style="color: #374151; font-size: 0.9rem;">{icon} {canal[:35]}</span>
+                            <span style="color: {color}; font-weight: 600;">{pct:.0f}%</span>
+                        </div>
+                        <div style="background: #f3f4f6; border-radius: 6px; height: 6px;">
+                            <div style="background: {color}; width: {bar_width}%; height: 100%; border-radius: 6px;"></div>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                st.markdown("</div>", unsafe_allow_html=True)
+    
+    with col_mk2:
+        if col_contenido in df_filtered.columns:
+            # Separar respuestas múltiples
+            contenido_raw = df_filtered[col_contenido].dropna().astype(str)
+            contenido_list = []
+            for c in contenido_raw:
+                contenido_list.extend([x.strip() for x in c.split(',') if x.strip()])
+            
+            contenido_counts = Counter(contenido_list)
+            invalid = ['no responde', 'no respondió', 'no respondio', 'no', 'ninguno', 'na', 'n/a', '1']
+            contenido_counts = {k: v for k, v in contenido_counts.items() if k.lower() not in invalid and len(k) > 2}
+            
+            if contenido_counts:
+                content_icons = {
+                    'Fotos y videos de los platillos': '📷',
+                    'Videos de la experiencia en el lugar': '🎬',
+                    'Promociones y descuentos': '🏷️',
+                    'Reseñas de influencers locales': '⭐',
+                    'Menú con precios': '📋',
+                    'Historias/reels del día a día': '📱',
+                }
+                
+                st.markdown("""
+                <div class="glass-card" style="border-left: 4px solid #8b5cf6;">
+                    <h4 style="color: #1f2937; margin-bottom: 15px;">🎯 Contenido que convierte</h4>
+                    <p style="color: #6b7280; font-size: 0.8rem; margin-bottom: 15px;">Qué tipo de posts motivan a visitar</p>
+                """, unsafe_allow_html=True)
+                
+                total_cont = sum(contenido_counts.values())
+                sorted_contenido = sorted(contenido_counts.items(), key=lambda x: x[1], reverse=True)[:6]
+                
+                for tipo, count in sorted_contenido:
+                    pct = count / total_cont * 100
+                    icon = content_icons.get(tipo, '📌')
+                    bar_width = min(pct * 1.5, 100)
+                    
+                    st.markdown(f"""
+                    <div style="margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                            <span style="color: #374151; font-size: 0.9rem;">{icon} {tipo[:40]}</span>
+                            <span style="color: #8b5cf6; font-weight: 600;">{pct:.0f}%</span>
+                        </div>
+                        <div style="background: #f3f4f6; border-radius: 6px; height: 6px;">
+                            <div style="background: linear-gradient(90deg, #c084fc, #8b5cf6); width: {bar_width}%; height: 100%; border-radius: 6px;"></div>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                st.markdown("</div>", unsafe_allow_html=True)
+    
+    # Insight de marketing
+    st.markdown("""
+    <div class="alert-info" style="margin-top: 20px;">
+        <strong>💡 Estrategia recomendada:</strong> El combo ganador para restaurantes en Villahermosa es 
+        <strong>Instagram + fotos de platillos + promociones</strong>. TikTok está creciendo rápidamente 
+        entre menores de 35 años. El boca a boca sigue siendo crítico - un cliente satisfecho es tu mejor publicidad.
+    </div>
+    """, unsafe_allow_html=True)
 
 # ============================================================================
 # PÁGINA 7: VOZ DEL CLIENTE
@@ -2247,7 +2481,7 @@ elif selected_page == "💬 Voz del Cliente":
     st.caption("Insights directos de las encuestas y los focus groups")
     
     # Usar radio buttons con key para mantener estado entre reruns
-    tab_options = ["🎯 Oportunidades", "💭 Lo que dicen", "😤 Lo que les molesta"]
+    tab_options = ["🎯 Oportunidades", "🏷️ Promociones", "💭 Lo que dicen", "😤 Lo que les molesta"]
     selected_tab = st.radio(
         "Sección",
         tab_options,
@@ -2258,7 +2492,103 @@ elif selected_page == "💬 Voz del Cliente":
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    if selected_tab == "🎯 Oportunidades":
+    if selected_tab == "🏷️ Promociones":
+        st.markdown("### ¿Qué promociones conquistan al comensal?")
+        st.caption("Tipos de ofertas que más influyen en la decisión de visitar un restaurante")
+        
+        col_promos = "16. ¿Qué tipo de promociones te resultan más atractivas al elegir un restaurante?"
+        
+        if col_promos in df_filtered.columns:
+            # Separar respuestas múltiples
+            promos_raw = df_filtered[col_promos].dropna().astype(str)
+            promos_list = []
+            for p in promos_raw:
+                promos_list.extend([x.strip() for x in p.split(',') if x.strip()])
+            
+            promos_counts = Counter(promos_list)
+            invalid = ['no responde', 'no respondió', 'no respondio', 'no', 'ninguno', 'na', 'n/a', '1', 'ninguna']
+            promos_counts = {k: v for k, v in promos_counts.items() if k.lower() not in invalid and len(k) > 3}
+            
+            if promos_counts:
+                # Iconos y colores por tipo de promoción
+                promo_config = {
+                    'Descuentos en ciertos días u horarios': ('🗓️', '#3b82f6', 'Happy hour / días especiales'),
+                    'Combos o paquetes familiares': ('👨‍👩‍👧‍👦', '#10b981', 'Ideales para familias'),
+                    'Promociones de cumpleaños': ('🎂', '#f59e0b', 'Atraen grupos grandes'),
+                    '2x1 en bebidas o alimentos': ('🍻', '#ef4444', 'Clásico que nunca falla'),
+                    'Puntos o programas de lealtad': ('⭐', '#8b5cf6', 'Fidelización a largo plazo'),
+                    'Cupones o descuentos por redes sociales': ('📱', '#e1306c', 'Engagement digital'),
+                    'Descuentos por reservaciones anticipadas': ('📅', '#06b6d4', 'Planificación garantizada'),
+                    'Ofertas flash (tiempo limitado)': ('⚡', '#f97316', 'Urgencia = acción'),
+                }
+                
+                total_promos = sum(promos_counts.values())
+                sorted_promos = sorted(promos_counts.items(), key=lambda x: x[1], reverse=True)
+                
+                # Dividir en dos columnas
+                col_p1, col_p2 = st.columns(2)
+                
+                # Top 4 en columna izquierda con diseño destacado
+                with col_p1:
+                    st.markdown("""
+                    <div class="glass-card">
+                        <h4 style="color: #1f2937; margin-bottom: 15px;">🏆 Las más efectivas</h4>
+                    """, unsafe_allow_html=True)
+                    
+                    for i, (promo, count) in enumerate(sorted_promos[:4]):
+                        pct = count / total_promos * 100
+                        icon, color, tip = promo_config.get(promo, ('🏷️', '#6b7280', 'Promoción general'))
+                        
+                        medal = ['🥇', '🥈', '🥉', '4️⃣'][i] if i < 4 else ''
+                        
+                        st.markdown(f"""
+                        <div style="margin-bottom: 14px; padding: 12px; background: {color}10; border-radius: 10px; border-left: 4px solid {color};">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: #1f2937; font-weight: 500;">{medal} {icon} {promo[:45]}</span>
+                                <span style="color: {color}; font-weight: 700; font-size: 1.2rem;">{pct:.0f}%</span>
+                            </div>
+                            <div style="color: #6b7280; font-size: 0.75rem; margin-top: 4px;">💡 {tip}</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    
+                    st.markdown("</div>", unsafe_allow_html=True)
+                
+                # Resto en columna derecha
+                with col_p2:
+                    st.markdown("""
+                    <div class="glass-card">
+                        <h4 style="color: #1f2937; margin-bottom: 15px;">📊 También mencionadas</h4>
+                    """, unsafe_allow_html=True)
+                    
+                    for promo, count in sorted_promos[4:8]:
+                        pct = count / total_promos * 100
+                        icon, color, tip = promo_config.get(promo, ('🏷️', '#6b7280', ''))
+                        
+                        st.markdown(f"""
+                        <div style="margin-bottom: 10px; padding: 10px; background: #f9fafb; border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: #374151; font-size: 0.9rem;">{icon} {promo[:40]}</span>
+                                <span style="color: #6b7280; font-weight: 600;">{pct:.0f}%</span>
+                            </div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    
+                    st.markdown("</div>", unsafe_allow_html=True)
+                
+                # Insight estratégico
+                top_promo = sorted_promos[0][0] if sorted_promos else "descuentos"
+                st.markdown(f"""
+                <div class="alert-success" style="margin-top: 20px;">
+                    <strong>🎯 Recomendación estratégica:</strong> La promoción más efectiva es 
+                    <strong>"{sorted_promos[0][0]}"</strong> ({sorted_promos[0][1]/total_promos*100:.0f}% de preferencia). 
+                    Combínala con <strong>redes sociales</strong> para maximizar alcance. Los <strong>cumpleaños</strong> 
+                    son oportunidades de oro: un festejado trae en promedio 6-8 personas.
+                </div>
+                """, unsafe_allow_html=True)
+        else:
+            st.warning("No hay datos de promociones disponibles.")
+    
+    elif selected_tab == "🎯 Oportunidades":
         st.markdown("### ¿Qué tipo de restaurante hace falta en la ciudad?")
         st.caption("Analizamos las respuestas abiertas para encontrar necesidades no cubiertas")
         
@@ -2339,6 +2669,43 @@ elif selected_page == "💬 Voz del Cliente":
         df_comments = df_comments[df_comments[col_comentarios].str.len() > 25]
         
         if len(df_comments) > 0:
+            # ===== NUEVO: Análisis temático de comentarios =====
+            st.markdown("#### 📊 Temas principales en los comentarios")
+            
+            # Categorizar comentarios por tema
+            tema_keywords = {
+                '👨‍🍳 Servicio y atención': ['servicio', 'atención', 'mesero', 'amable', 'trato', 'personal', 'rapidez', 'lento'],
+                '💰 Relación precio-calidad': ['precio', 'caro', 'económico', 'vale', 'barato', 'costoso', 'pagar'],
+                '🍽️ Calidad de comida': ['comida', 'sabor', 'fresco', 'delicioso', 'rico', 'porción', 'platillo', 'menú'],
+                '📍 Variedad y opciones': ['variedad', 'opciones', 'falta', 'diferentes', 'más', 'nuevo', 'propuesta'],
+                '🏠 Ambiente y espacio': ['ambiente', 'lugar', 'espacio', 'limpio', 'bonito', 'agradable', 'ruido'],
+            }
+            
+            tema_counts = Counter()
+            for comment in df_comments[col_comentarios]:
+                comment_lower = comment.lower()
+                for tema, keywords in tema_keywords.items():
+                    if any(kw in comment_lower for kw in keywords):
+                        tema_counts[tema] += 1
+            
+            if tema_counts:
+                total_temas = sum(tema_counts.values())
+                cols_temas = st.columns(min(5, len(tema_counts)))
+                
+                for i, (tema, count) in enumerate(tema_counts.most_common(5)):
+                    with cols_temas[i]:
+                        pct = count / len(df_comments) * 100
+                        st.markdown(f"""
+                        <div style="text-align: center; padding: 10px; background: #f9fafb; border-radius: 10px;">
+                            <div style="font-size: 1.5rem;">{tema.split()[0]}</div>
+                            <div style="color: #1f2937; font-size: 0.8rem; font-weight: 500;">{tema.split(' ', 1)[1]}</div>
+                            <div style="color: #db2777; font-weight: 700; font-size: 1.1rem;">{pct:.0f}%</div>
+                        </div>
+                        """, unsafe_allow_html=True)
+            
+            st.markdown("<br>", unsafe_allow_html=True)
+            st.markdown("#### 💬 Citas textuales")
+            
             # Botón para ver otros comentarios
             col_btn, col_info = st.columns([1, 3])
             with col_btn:

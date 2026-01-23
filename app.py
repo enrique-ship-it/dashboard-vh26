@@ -147,6 +147,12 @@ CSS_STYLES = """
         -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
         border-right: 1px solid rgba(219, 39, 119, 0.15) !important;
         box-shadow: 4px 0 24px rgba(219, 39, 119, 0.08) !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        transform: none !important;
+        min-width: 20rem !important;
+        width: 20rem !important;
     }
     
     [data-testid="stSidebar"]::before {
@@ -165,33 +171,32 @@ CSS_STYLES = """
     }
     
     [data-testid="stSidebar"] .stSelectbox label,
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        transform: none !important;
-        min-width: 20rem !important;
-        max-width: 20rem !important;
-        width: 20rem !important;
     [data-testid="stSidebar"] .stMultiSelect label {
-
-    /* Forzar sidebar visible aunque esté colapsado */
-    [data-testid="stSidebar"][aria-expanded="false"] {
-        transform: translateX(0) !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        min-width: 20rem !important;
-        max-width: 20rem !important;
-        width: 20rem !important;
-    }
-
-    [data-testid="stSidebar"] > div {
-        width: 20rem !important;
-    }
         color: #6b7280 !important;
         font-weight: 600 !important;
         font-size: 0.85rem !important;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+    }
+    
+    /* Forzar sidebar siempre visible */
+    [data-testid="stSidebar"][aria-expanded="false"] {
+        transform: translateX(0) !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        min-width: 20rem !important;
+        width: 20rem !important;
+        display: block !important;
+    }
+
+    [data-testid="stSidebar"] > div {
+        width: 20rem !important;
+    }
+    
+    /* Botón de colapsar sidebar */
+    [data-testid="collapsedControl"] {
+        display: flex !important;
+        visibility: visible !important;
     }
     
     /* Glass Card mejorada con inner glow */

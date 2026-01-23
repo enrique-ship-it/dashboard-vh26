@@ -1509,14 +1509,16 @@ elif selected_page == "👥 Perfil del Consumidor":
         # Relación con el gasto
         if col_relacion_gasto in df_filtered.columns:
             gasto_rel = df_filtered[col_relacion_gasto].value_counts()
-            gasto_rel = gasto_rel[~gasto_rel.index.isin(['No responde', 'No Respondió', 'No Respondio', 'no responde'])]
+            gasto_rel = gasto_rel[~gasto_rel.index.isin(['No responde', 'No Respondió', 'No Respondio', 'no responde', 'Prefiero no responder,'])]
             
-            # Mapear a etiquetas cortas
+            # Mapear a etiquetas cortas - valores reales del dataset
             gasto_map = {
-                'Me gusta cuidar mi presupuesto, pero me doy gustos de vez en cuando.': ('🎯 Moderados', 'Cuidan presupuesto con gustos ocasionales'),
-                'No me preocupo por el precio si la experiencia lo vale.': ('💎 Experienciales', 'La experiencia vale más que el precio'),
-                'Solo como fuera en ocasiones especiales.': ('🎂 Ocasionales', 'Reservan para celebraciones'),
-                'Prefiero opciones económicas para comer fuera frecuentemente.': ('💰 Frecuentes', 'Opciones económicas para ir seguido'),
+                'Puedo salir a restaurantes pero cuido mi presupuesto': ('🎯 Moderados', 'Salen pero cuidan su presupuesto'),
+                'Puedo salir a comer a restaurantes con frecuencia sin afectar mi presupuesto,': ('💎 Sin restricción', 'Comen fuera frecuentemente sin problemas'),
+                'Puedo salir a comer a restaurantes con frecuencia sin afectar mi presupuesto': ('💎 Sin restricción', 'Comen fuera frecuentemente sin problemas'),
+                'Salgo a comer fuera solo en ocasiones especiales,': ('🎂 Solo ocasiones', 'Reservan para celebraciones especiales'),
+                'Rara vez salgo a comer fuera por temas de presupuesto,': ('💰 Presupuesto limitado', 'Rara vez salen por temas económicos'),
+                'Rara vez salgo a comer fuera por temas de presupuesto': ('💰 Presupuesto limitado', 'Rara vez salen por temas económicos'),
             }
             
             if len(gasto_rel) > 0:
@@ -1528,25 +1530,33 @@ elif selected_page == "👥 Perfil del Consumidor":
                 total = gasto_rel.sum()
                 for frase, count in gasto_rel.items():
                     pct = count / total * 100
-                    label, desc = gasto_map.get(frase, ('📊', frase[:40]))
+                    mapped = gasto_map.get(frase)
+                    if mapped:
+                        label, desc = mapped
+                    else:
+                        # Fallback: crear etiqueta del texto original
+                        label = '📊 ' + frase[:30] + ('...' if len(frase) > 30 else '')
+                        desc = frase
                     
                     # Color según tipo
                     if 'Moderados' in label:
                         color = '#3b82f6'
-                    elif 'Experienciales' in label:
+                    elif 'Sin restricción' in label:
                         color = '#8b5cf6'
-                    elif 'Ocasionales' in label:
+                    elif 'Solo ocasiones' in label:
                         color = '#f59e0b'
+                    elif 'limitado' in label:
+                        color = '#ef4444'
                     else:
                         color = '#10b981'
                     
                     st.markdown(f"""
-                    <div style="margin-bottom: 14px; padding: 10px; background: {color}10; border-radius: 8px; border-left: 3px solid {color};">
+                    <div style="margin-bottom: 14px; padding: 12px; background: {color}10; border-radius: 10px; border-left: 4px solid {color};">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span style="color: #1f2937; font-weight: 500;">{label}</span>
-                            <span style="color: {color}; font-weight: 700; font-size: 1.1rem;">{pct:.0f}%</span>
+                            <span style="color: #1f2937; font-weight: 600; font-size: 1rem;">{label}</span>
+                            <span style="color: {color}; font-weight: 700; font-size: 1.2rem;">{pct:.0f}%</span>
                         </div>
-                        <div style="color: #6b7280; font-size: 0.8rem; margin-top: 4px;">{desc}</div>
+                        <div style="color: #6b7280; font-size: 0.85rem; margin-top: 6px;">{desc}</div>
                     </div>
                     """, unsafe_allow_html=True)
                 

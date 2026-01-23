@@ -156,6 +156,16 @@ CSS_STYLES = """
         display: none !important;
     }
 
+    /* Ocultar contenedor/ghost del toggle de sidebar que Streamlit genera */
+    div[title="Toggle sidebar"],
+    button[title="Toggle sidebar"],
+    [data-testid="collapsedControl"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
     /* Ocultar cualquier heading residual "SIDEBAR VISIBLE" que haya quedado en caché */
     section[data-testid="stSidebar"] h3 {
         display: none !important;
@@ -164,6 +174,7 @@ CSS_STYLES = """
     /* Dejar espacio al contenido principal cuando el sidebar está visible */
     [data-testid="stAppViewContainer"] > .main {
         padding-top: 0 !important;
+        margin-top: 0 !important;
     }
 
     .main .block-container {

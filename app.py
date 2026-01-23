@@ -1204,35 +1204,36 @@ if selected_page == "📈 Resumen Ejecutivo":
             </div>
             """, unsafe_allow_html=True)
         
-        # 2. Concentración del mercado - insight útil
+        # 2. Competencia del mercado - insight útil
         if len(mentions) >= 3:
             top_3 = mentions.most_common(3)
             top_3_total = sum([x[1] for x in top_3])
             total_menciones = sum(mentions.values())
             concentracion = round(top_3_total / total_menciones * 100) if total_menciones > 0 else 0
+            num_restaurantes = len(mentions)
             
-            # Determinar nivel de concentración
+            # Determinar nivel de competencia
             if concentracion >= 40:
-                nivel = "alta"
                 color_class = "alert-danger"
-                icon = "📊"
-                insight = "El mercado está muy concentrado. Pocos dominan las preferencias."
+                icon = "🏢"
+                titulo = "Mercado dominado"
+                insight = f"Solo 3 restaurantes concentran casi la mitad de las preferencias. <strong>Difícil competir</strong> sin diferenciación radical."
             elif concentracion >= 25:
-                nivel = "moderada"
                 color_class = "alert-info"
-                icon = "📈"
-                insight = "Hay líderes claros pero espacio para competir."
+                icon = "⚖️"
+                titulo = "Competencia equilibrada"
+                insight = f"Hay líderes claros pero todavía <strong>hay espacio para crecer</strong> si ofreces algo diferente."
             else:
-                nivel = "baja"
                 color_class = "alert-success"
                 icon = "🎯"
-                insight = "Mercado fragmentado = oportunidad para diferenciarse."
+                titulo = "Mercado abierto"
+                insight = f"Con {num_restaurantes} opciones mencionadas, <strong>nadie domina</strong>. Oportunidad para posicionarte con buena estrategia."
             
-            top_3_names = ", ".join([x[0] for x in top_3])
+            top_3_names = ", ".join([f"{x[0]} ({x[1]})" for x in top_3])
             st.markdown(f"""
             <div class="{color_class}">
-                <strong>{icon} Concentración {nivel}</strong><br>
-                El Top 3 (<strong>{top_3_names}</strong>) acapara el <strong>{concentracion}%</strong> de las menciones. {insight}
+                <strong>{icon} {titulo}</strong><br>
+                Los más mencionados: <strong>{top_3_names}</strong>. {insight}
             </div>
             """, unsafe_allow_html=True)
         

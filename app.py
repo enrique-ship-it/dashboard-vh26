@@ -1667,13 +1667,21 @@ elif selected_page == "✅ Validación GMB":
         leader = validation_data[0]
         col_i1, col_i2 = st.columns(2)
         
+        # Construir texto de Google de forma segura
+        google_text = ""
+        if leader['Rating GMB'] and leader['Reseñas']:
+            try:
+                google_text = f"Google lo respalda con ⭐{leader['Rating GMB']} y {int(leader['Reseñas']):,} reseñas."
+            except (ValueError, TypeError):
+                google_text = ""
+        
         with col_i1:
             st.markdown(f"""
             <div class="glass-card" style="border-left: 4px solid #22c55e;">
                 <h4 style="color: #166534; margin-bottom: 12px;">🏆 Líder indiscutible</h4>
                 <p style="color: #4b5563; margin: 0;">
                     <strong>{leader['Restaurante']}</strong> domina con <strong>{leader['Menciones']} menciones</strong>. 
-                    {f"Google lo respalda con ⭐{leader['Rating GMB']} y {leader['Reseñas']:,} reseñas." if leader['Rating GMB'] else ""}
+                    {google_text}
                 </p>
             </div>
             """, unsafe_allow_html=True)
@@ -1705,12 +1713,17 @@ elif selected_page == "✅ Validación GMB":
     # Hidden gems
     hidden_gems = [item for item in validation_data if item['Rating GMB'] and item['Rating GMB'] >= 4.5 and item['Reseñas'] and item['Reseñas'] >= 1000 and item['Menciones'] < 50]
     if hidden_gems:
+        gem = hidden_gems[0]
+        try:
+            reviews_text = f"{int(gem['Reseñas']):,}" if gem['Reseñas'] else "muchas"
+        except (ValueError, TypeError):
+            reviews_text = "muchas"
         st.markdown(f"""
         <div class="glass-card" style="border-left: 4px solid #8b5cf6; margin-top: 12px;">
             <h4 style="color: #6d28d9; margin-bottom: 12px;">💎 Joyas escondidas</h4>
             <p style="color: #4b5563; margin: 0;">
-                <strong>{hidden_gems[0]['Restaurante']}</strong> tiene excelentes calificaciones en Google 
-                (⭐{hidden_gems[0]['Rating GMB']}, {hidden_gems[0]['Reseñas']:,} reseñas) pero solo {hidden_gems[0]['Menciones']} 
+                <strong>{gem['Restaurante']}</strong> tiene excelentes calificaciones en Google 
+                (⭐{gem['Rating GMB']}, {reviews_text} reseñas) pero solo {gem['Menciones']} 
                 menciones locales. Oportunidad de marketing: ¿por qué no está en el radar del consumidor tabasqueño?
             </p>
         </div>

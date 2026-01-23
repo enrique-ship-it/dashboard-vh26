@@ -163,7 +163,7 @@ CSS_STYLES = """
 
     /* Dejar espacio al contenido principal cuando el sidebar está visible */
     .main .block-container {
-        padding-top: 1rem !important;
+        padding-top: 0 !important;
         padding-left: 340px !important;
         padding-right: 1.5rem !important;
     }

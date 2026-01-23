@@ -2048,11 +2048,11 @@ elif selected_page == "📁 Explorar y Descargar":
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("""
+            st.markdown(f"""
             <div class="glass-card">
                 <h4 style="color: #1f2937;">📋 Encuestas completas</h4>
                 <p style="color: #6b7280; font-size: 0.9rem;">
-                    341 respuestas · 41 variables<br>
+                    {len(df_encuestas)} respuestas · {len(df_encuestas.columns)} variables<br>
                     Base limpia y homologada
                 </p>
             </div>
@@ -2068,11 +2068,11 @@ elif selected_page == "📁 Explorar y Descargar":
             )
         
         with col2:
-            st.markdown("""
+            st.markdown(f"""
             <div class="glass-card">
                 <h4 style="color: #1f2937;">🌐 Base Google Maps</h4>
                 <p style="color: #6b7280; font-size: 0.9rem;">
-                    2,278 restaurantes mapeados<br>
+                    {len(df_gmb):,} restaurantes mapeados<br>
                     Ratings, reseñas, contacto
                 </p>
             </div>

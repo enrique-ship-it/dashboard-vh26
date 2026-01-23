@@ -1296,6 +1296,13 @@ with st.sidebar:
         st.rerun()
 
 # ============================================================================
+# FILTROS EN PANEL PRINCIPAL (siempre visibles)
+# ============================================================================
+with st.expander("🎯 Filtros", expanded=False):
+    st.caption("Puedes seleccionar varios valores por filtro")
+    filter_edad, filter_zona, filter_gasto, filter_freq, active_filters = render_filters()
+
+# ============================================================================
 # APLICAR FILTROS (MULTI-SELECT)
 # ============================================================================
 df_filtered = df_encuestas.copy()

@@ -48,9 +48,13 @@ def check_auth():
                     <img src='data:image/png;base64,{logo_login}' style='width: 200px; margin-bottom: 20px;'/>
                     <h1 style='margin: 10px 0;'>Consumer Insights Dashboard</h1>
                     <p style='color: #666; font-size: 16px;'>VH26 - Villahermosa</p>
-                    <p style='color: #9ca3af; font-size: 13px; margin-top: 8px;'>
-                        Mejor experiencia en Desktop. En móvil puede haber comportamientos limitados.
-                    </p>
+                    <div style='display: inline-block; margin-top: 10px; padding: 8px 14px; border-radius: 12px;
+                                background: linear-gradient(135deg, rgba(219, 39, 119, 0.18), rgba(147, 51, 234, 0.12));
+                                border: 1px solid rgba(219, 39, 119, 0.25);'>
+                        <span style='color: #9f1239; font-size: 13px; font-weight: 600;'>
+                            Mejor experiencia en Desktop. En móvil puede haber comportamientos limitados.
+                        </span>
+                    </div>
                 </div>
                 """, unsafe_allow_html=True)
             else:
@@ -58,9 +62,13 @@ def check_auth():
                 <div style='text-align: center; padding: 40px 0;'>
                     <h1>Consumer Insights Dashboard</h1>
                     <p style='color: #666; font-size: 16px;'>VH26 - Villahermosa</p>
-                    <p style='color: #9ca3af; font-size: 13px; margin-top: 8px;'>
-                        Mejor experiencia en Desktop. En móvil puede haber comportamientos limitados.
-                    </p>
+                    <div style='display: inline-block; margin-top: 10px; padding: 8px 14px; border-radius: 12px;
+                                background: linear-gradient(135deg, rgba(219, 39, 119, 0.18), rgba(147, 51, 234, 0.12));
+                                border: 1px solid rgba(219, 39, 119, 0.25);'>
+                        <span style='color: #9f1239; font-size: 13px; font-weight: 600;'>
+                            Mejor experiencia en Desktop. En móvil puede haber comportamientos limitados.
+                        </span>
+                    </div>
                 </div>
                 """, unsafe_allow_html=True)
             

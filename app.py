@@ -576,6 +576,25 @@ CSS_STYLES = """
             inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
         backdrop-filter: blur(20px) saturate(180%) !important;
     }
+
+    /* DOWNLOAD BUTTONS - asegurar visibilidad */
+    .stDownloadButton > button,
+    .stDownloadButton > a {
+        background: linear-gradient(135deg, 
+            rgba(255,255,255,0.95) 0%, 
+            rgba(252,231,243,0.9) 100%) !important;
+        color: #db2777 !important;
+        border: 1.5px solid rgba(219, 39, 119, 0.3) !important;
+        border-radius: 16px !important;
+        padding: 12px 24px !important;
+        font-weight: 600 !important;
+        display: inline-flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100% !important;
+        margin-top: 10px !important;
+        box-shadow: 0 4px 16px rgba(219, 39, 119, 0.12) !important;
+    }
     
     .stButton > button:hover {
         background: linear-gradient(135deg, #fce7f3 0%, #f5d0fe 100%) !important;
@@ -1157,6 +1176,9 @@ def normalize_restaurant_name(name):
         'tacos joven': 'Tacos Joven',
         'sushito': 'Sushito',
         'han sushi': 'Han Sushi',
+        'la dantesca': 'La Dantesca',
+        'dantesca': 'La Dantesca',
+        'la dante': 'La Dantesca',
         
         # El Matador
         'matador': 'El Matador',
@@ -1174,6 +1196,26 @@ def normalize_restaurant_name(name):
     
     # Si no hay coincidencia, convertir a título
     return name.title()
+
+def is_valid_restaurant_name(name):
+    """Heurística simple para filtrar entradas basura en rankings."""
+    if not name:
+        return False
+    cleaned = re.sub(r"[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]", "", str(name)).strip()
+    if not cleaned:
+        return False
+    lower = cleaned.lower()
+    letters = re.findall(r"[a-záéíóúüñ]", lower)
+    if not letters:
+        return False
+    # Evitar cadenas con un solo carácter repetido
+    if len(set(lower.replace(" ", ""))) == 1:
+        return False
+    vowels = re.findall(r"[aeiouáéíóúü]", lower)
+    short_whitelist = {"kfc", "bk", "mcd", "mcdonalds"}
+    if len(letters) <= 4 and len(vowels) == 0 and lower not in short_whitelist:
+        return False
+    return True
 
 def get_category_leaders(df):
     """Obtiene líderes por categoría con normalización de nombres"""
@@ -1226,7 +1268,10 @@ def get_category_leaders(df):
                 for part in parts:
                     if part in invalid_mentions:
                         continue
-                    normalized_vals.append(normalize_restaurant_name(part))
+                    normalized = normalize_restaurant_name(part)
+                    if not is_valid_restaurant_name(normalized):
+                        continue
+                    normalized_vals.append(normalized)
             if len(normalized_vals) > 0:
                 counts = Counter(normalized_vals)
                 if counts:
@@ -2047,8 +2092,8 @@ elif selected_page == "👥 Perfil del Consumidor":
                 """, unsafe_allow_html=True)
                 
                 total = gasto_rel.sum()
+                grouped = {}
                 for frase, count in gasto_rel.items():
-                    pct = count / total * 100
                     mapped = gasto_map.get(frase)
                     if mapped:
                         label, desc = mapped
@@ -2056,6 +2101,25 @@ elif selected_page == "👥 Perfil del Consumidor":
                         # Fallback: crear etiqueta del texto original
                         label = '📊 ' + frase[:30] + ('...' if len(frase) > 30 else '')
                         desc = frase
+                    if label in grouped:
+                        grouped[label]["count"] += count
+                    else:
+                        grouped[label] = {"count": count, "desc": desc}
+
+                display_order = [
+                    '🎯 Moderados',
+                    '💎 Sin restricción',
+                    '🎂 Solo ocasiones',
+                    '💰 Presupuesto limitado'
+                ]
+                ordered_labels = [label for label in display_order if label in grouped] + [
+                    label for label in grouped.keys() if label not in display_order
+                ]
+
+                for label in ordered_labels:
+                    count = grouped[label]["count"]
+                    desc = grouped[label]["desc"]
+                    pct = count / total * 100
                     
                     # Color según tipo
                     if 'Moderados' in label:
@@ -3247,7 +3311,7 @@ elif selected_page == "💬 Voz del Cliente":
             # Botón para ver otros comentarios
             col_btn, col_info = st.columns([1, 3])
             with col_btn:
-                st.button("🔄 Ver otros", on_click=refresh_comments, use_container_width=True)
+                st.button("🔄 Ver otros comentarios", on_click=refresh_comments, use_container_width=True, type="primary", key="refresh_comments_btn")
             with col_info:
                 st.caption(f"Mostrando {min(6, len(df_comments))} de {len(df_comments)} comentarios disponibles")
             
@@ -3434,7 +3498,8 @@ elif selected_page == "📁 Explorar y Descargar":
             label="⬇️ Descargar selección filtrada",
             data=csv_filtered,
             file_name="datos_filtrados.csv",
-            mime="text/csv"
+            mime="text/csv",
+            use_container_width=True
         )
         
         st.markdown("<br>", unsafe_allow_html=True)

@@ -2,6 +2,7 @@
 CONSUMER INSIGHTS DASHBOARD - VH26
 Dashboard interactivo para análisis del mercado gastronómico de Villahermosa
 Desarrollado por NO ROBOT | Enero 2026
+Version: 2.1.0 - 24/01/2026
 """
 
 import streamlit as st

@@ -1176,9 +1176,12 @@ def normalize_restaurant_name(name):
         'tacos joven': 'Tacos Joven',
         'sushito': 'Sushito',
         'han sushi': 'Han Sushi',
+        
+        # La Dantesca - todas las variaciones
         'la dantesca': 'La Dantesca',
         'dantesca': 'La Dantesca',
         'la dante': 'La Dantesca',
+        'dantesca es lo maximo': 'La Dantesca',
         
         # El Matador
         'matador': 'El Matador',

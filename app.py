@@ -48,6 +48,9 @@ def check_auth():
                     <img src='data:image/png;base64,{logo_login}' style='width: 200px; margin-bottom: 20px;'/>
                     <h1 style='margin: 10px 0;'>Consumer Insights Dashboard</h1>
                     <p style='color: #666; font-size: 16px;'>VH26 - Villahermosa</p>
+                    <p style='color: #9ca3af; font-size: 13px; margin-top: 8px;'>
+                        Mejor experiencia en Desktop. En móvil puede haber comportamientos limitados.
+                    </p>
                 </div>
                 """, unsafe_allow_html=True)
             else:
@@ -55,6 +58,9 @@ def check_auth():
                 <div style='text-align: center; padding: 40px 0;'>
                     <h1>Consumer Insights Dashboard</h1>
                     <p style='color: #666; font-size: 16px;'>VH26 - Villahermosa</p>
+                    <p style='color: #9ca3af; font-size: 13px; margin-top: 8px;'>
+                        Mejor experiencia en Desktop. En móvil puede haber comportamientos limitados.
+                    </p>
                 </div>
                 """, unsafe_allow_html=True)
             
@@ -177,11 +183,11 @@ CSS_STYLES = """
         -moz-osx-font-smoothing: grayscale;
     }
     
-    /* SIDEBAR FLOTANTE ESTILO macOS WIDGETS */
+    /* SIDEBAR FLOTANTE ESTILO macOS LIQUID GLASS */
     section[data-testid="stSidebar"] {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(253, 242, 248, 0.55) 100%) !important;
-        backdrop-filter: blur(40px) saturate(200%) !important;
-        -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(253, 242, 248, 0.20) 50%, rgba(255, 255, 255, 0.15) 100%) !important;
+        backdrop-filter: blur(30px) saturate(180%) brightness(1.05) !important;
+        -webkit-backdrop-filter: blur(30px) saturate(180%) brightness(1.05) !important;
         visibility: visible !important;
         display: block !important;
         transform: translateX(0) !important;
@@ -196,12 +202,12 @@ CSS_STYLES = """
         top: 0 !important;
         z-index: 999 !important;
         box-shadow: 
-            0 10px 40px rgba(219, 39, 119, 0.15),
-            0 4px 12px rgba(0, 0, 0, 0.06),
-            inset 2px 2px 6px rgba(255, 255, 255, 0.75),
-            inset -2px -2px 6px rgba(0, 0, 0, 0.10),
-            inset -1px -1px 3px rgba(255, 255, 255, 0.55) !important;
-        border: none !important;
+            0 10px 40px rgba(219, 39, 119, 0.12),
+            0 4px 12px rgba(0, 0, 0, 0.05),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.35),
+            inset 2px 2px 8px rgba(255, 255, 255, 0.4),
+            inset -2px -2px 8px rgba(0, 0, 0, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
         animation: fadeInUp 0.5s ease-out !important;
     }
     
@@ -211,6 +217,14 @@ CSS_STYLES = """
         height: 100% !important;
         overflow-y: auto !important;
         overflow-x: hidden !important;
+        background: transparent !important;
+    }
+    
+    /* Hacer transparentes los elementos internos del sidebar */
+    section[data-testid="stSidebar"] [data-testid="stVerticalBlock"],
+    section[data-testid="stSidebar"] [data-testid="stVerticalBlockBorderWrapper"],
+    section[data-testid="stSidebar"] .stVerticalBlock {
+        background: transparent !important;
     }
     
     /* Scrollbar personalizado estilo macOS */

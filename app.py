@@ -268,8 +268,7 @@ CSS_STYLES = """
     [data-testid="collapsedControl"],
     button[class*="collapsedControl"],
     .css-1544g2n,
-    .st-emotion-cache-1inwz65,
-    button[class*="st-emotion-cache"] {
+    .st-emotion-cache-1inwz65 {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
@@ -3309,18 +3308,13 @@ elif selected_page == "💬 Voz del Cliente":
                         </div>
                         """, unsafe_allow_html=True)
             
-            st.markdown("<br>", unsafe_allow_html=True)
-            st.markdown("#### 💬 Citas textuales")
-            
-            # Botón para ver otros comentarios
-            col_btn, col_info = st.columns([1, 3])
-            with col_btn:
-                st.button("🔄 Ver otros comentarios", on_click=refresh_comments, use_container_width=True, type="primary", key="refresh_comments_btn")
-            with col_info:
-                st.caption(f"Mostrando {min(6, len(df_comments))} de {len(df_comments)} comentarios disponibles")
-            
-            st.markdown("<br>", unsafe_allow_html=True)
-            
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("#### 💬 Citas textuales")
+        st.button("🔄 Ver otros comentarios", on_click=refresh_comments, type="primary", key="refresh_btn_citas")
+        st.caption(f"Mostrando {min(6, len(df_comments))} de {len(df_comments)} comentarios disponibles")
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        if len(df_comments) > 0:
             # Mostrar hasta 6 comentarios aleatorios con seed dinámico
             sample_size = min(6, len(df_comments))
             sampled = df_comments.sample(n=sample_size, random_state=get_comment_seed())

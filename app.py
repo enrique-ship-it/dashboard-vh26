@@ -1020,7 +1020,10 @@ def get_restaurant_mentions(df):
                 for part in parts:
                     if part in invalid_mentions:
                         continue
-                    all_mentions.append(normalize_restaurant_name(part))
+                    normalized = normalize_restaurant_name(part)
+                    # Filtrar entradas inválidas (emails, URLs, teléfonos, etc.)
+                    if is_valid_restaurant_name(normalized):
+                        all_mentions.append(normalized)
     
     return Counter(all_mentions)
 
@@ -1204,7 +1207,22 @@ def is_valid_restaurant_name(name):
     """Heurística simple para filtrar entradas basura en rankings."""
     if not name:
         return False
-    cleaned = re.sub(r"[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]", "", str(name)).strip()
+    
+    name_str = str(name).strip()
+    
+    # Filtrar emails
+    if '@' in name_str or '.com' in name_str.lower() or '.mx' in name_str.lower():
+        return False
+    
+    # Filtrar URLs
+    if 'http' in name_str.lower() or 'www.' in name_str.lower():
+        return False
+    
+    # Filtrar números de teléfono (más de 6 dígitos seguidos)
+    if re.search(r'\d{7,}', name_str):
+        return False
+    
+    cleaned = re.sub(r"[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]", "", name_str).strip()
     if not cleaned:
         return False
     lower = cleaned.lower()

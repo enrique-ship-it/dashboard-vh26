@@ -1121,8 +1121,8 @@ def normalize_restaurant_name(name):
         'madisson': 'Madison Grill',
         'madison grill': 'Madison Grill',
         'madison/grill': 'Madison Grill',
-        'leo restaurante': 'Leo',
-        'leo en tu casa': 'Leo',
+        'leo restaurante': 'Leo Restaurante',
+        'leo en tu casa': 'Leo Restaurante',
         'salon caimito': 'Salón Caimito',
         'salón caimito': 'Salón Caimito',
         'a takear': 'A Takear',
@@ -1173,7 +1173,9 @@ def normalize_restaurant_name(name):
         'bar la lupita': 'La Lupita',
         'milagrito': 'Milagrito',
         'fuego extremo': 'Fuego Extremo',
+        'fuego': 'Fuego Extremo',
         'fuego animal': 'Fuego Animal',
+        'fuego rey': 'Fuego Extremo',
         'el machetazo': 'El Machetazo',
         'banquetacos': 'Banquetacos',
         'tacos joven': 'Tacos Joven',
@@ -1378,7 +1380,7 @@ def is_valid_restaurant_name(name):
     # Filtrar patrones de teclado aleatorio (3+ consonantes seguidas)
     if re.search(r'[bcdfghjklmnpqrstvwxyz]{3,}', lower):
         # Excepciones para nombres reales con grupos consonánticos comunes
-        exceptions = ['starbucks', 'mcdonalds', 'subway', 'schnitz', 'grill', 'express', 'fresh', 'crispy', 'brunch', 'drinks']
+        exceptions = ['starbucks', 'mcdonalds', 'subway', 'schnitz', 'grill', 'express', 'fresh', 'crispy', 'brunch', 'drinks', 'extremo', 'fuego extremo']
         if not any(exc in lower for exc in exceptions):
             return False
     

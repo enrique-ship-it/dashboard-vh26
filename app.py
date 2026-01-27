@@ -1232,10 +1232,35 @@ def is_valid_restaurant_name(name):
     # Evitar cadenas con un solo carácter repetido
     if len(set(lower.replace(" ", ""))) == 1:
         return False
+    
+    # Lista blanca de nombres cortos válidos conocidos
+    short_whitelist = {"kfc", "bk", "mcd", "mcdonalds", "leo", "toks", "vips", "ihop", "wok"}
+    
+    # Contar vocales
     vowels = re.findall(r"[aeiouáéíóúü]", lower)
-    short_whitelist = {"kfc", "bk", "mcd", "mcdonalds"}
+    
+    # Filtrar strings cortos sin vocales (probablemente errores de captura)
     if len(letters) <= 4 and len(vowels) == 0 and lower not in short_whitelist:
         return False
+    
+    # Filtrar strings más largos sin vocales (como "Bsnzn", "Ndndn")
+    # Un nombre real debe tener al menos 1 vocal por cada 4-5 consonantes
+    if len(letters) > 4 and len(vowels) == 0:
+        return False
+    
+    # Si tiene más de 3 letras pero ninguna vocal, es sospechoso
+    consonants = len(letters) - len(vowels)
+    if len(letters) >= 3 and vowels and consonants / len(vowels) > 5:
+        return False
+    
+    # Filtrar patrones de teclado aleatorio (muchas consonantes seguidas sin sentido)
+    # Buscar 4+ consonantes seguidas sin vocal
+    if re.search(r'[bcdfghjklmnpqrstvwxyz]{4,}', lower):
+        # Excepciones para nombres reales con grupos consonánticos
+        exceptions = ['schnitzel', 'starbucks', 'mcdonalds', 'subway']
+        if lower not in exceptions and not any(exc in lower for exc in exceptions):
+            return False
+    
     return True
 
 def get_category_leaders(df):

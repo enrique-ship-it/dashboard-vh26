@@ -1186,9 +1186,121 @@ def normalize_restaurant_name(name):
         'la dante': 'La Dantesca',
         'dantesca es lo maximo': 'La Dantesca',
         
-        # El Matador
+        # El Matador - TODAS LAS VARIACIONES
         'matador': 'El Matador',
         'el matador': 'El Matador',
+        
+        # El Teapaneco - TODAS LAS VARIACIONES
+        'el teapaneco': 'El Teapaneco',
+        'teapaneco': 'El Teapaneco',
+        'el teapanecos': 'El Teapaneco',
+        
+        # Los Tulipanes - TODAS LAS VARIACIONES
+        'los tulipanes': 'Los Tulipanes',
+        'tulipanes': 'Los Tulipanes',
+        'tulipanes restaurant': 'Los Tulipanes',
+        
+        # El Ganadero - TODAS LAS VARIACIONES
+        'el ganadero': 'El Ganadero',
+        'ganadero': 'El Ganadero',
+        'ganader': 'El Ganadero',
+        
+        # La Estancia - TODAS LAS VARIACIONES
+        'la estancia': 'La Estancia',
+        'estancia': 'La Estancia',
+        'tacos la estancia': 'La Estancia',
+        
+        # Karukay - TODAS LAS VARIACIONES
+        'karukay': 'Karukay',
+        'karukai': 'Karukay',
+        
+        # Rodizio - TODAS LAS VARIACIONES
+        'rodizio': 'Rodizio',
+        'el rodizio': 'Rodizio',
+        'grupo rodizio': 'Rodizio',
+        
+        # Roma Norte - TODAS LAS VARIACIONES
+        'roma norte': 'Roma Norte',
+        'roma norte¿': 'Roma Norte',
+        
+        # A Toda Salsa - TODAS LAS VARIACIONES
+        'a toda salsa': 'A Toda Salsa',
+        'toda salsa': 'A Toda Salsa',
+        
+        # Woonkies - TODAS LAS VARIACIONES
+        'woonkies': 'Woonkies',
+        'woonkie': 'Woonkies',
+        
+        # Laut - TODAS LAS VARIACIONES
+        'laut': 'Laut',
+        'laut coffe': 'Laut',
+        'lautt': 'Laut',
+        
+        # Hudson - TODAS LAS VARIACIONES
+        'hudson': 'Hudson',
+        'hudsond': 'Hudson',
+        'hudsons': 'Hudson',
+        
+        # Maiña - TODAS LAS VARIACIONES
+        'maiña': 'Maiña',
+        'el maiña': 'Maiña',
+        'la maiña': 'Maiña',
+        
+        # Sensei - TODAS LAS VARIACIONES
+        'sensei': 'Sensei',
+        'sensei sushi': 'Sensei',
+        
+        # La Selva
+        'la selva': 'La Selva',
+        'selva': 'La Selva',
+        
+        # Tina Cantina
+        'tina cantina': 'Tina Cantina',
+        
+        # Pescados y Mariscos
+        'pescados y mariscos': 'Pescados y Mariscos',
+        
+        # Banquetacos - TODAS LAS VARIACIONES
+        'banquetacos': 'Banquetacos',
+        'banquetakos': 'Banquetacos',
+        'banketacos': 'Banquetacos',
+        
+        # Tacos Joven
+        'tacos joven': 'Tacos Joven',
+        'taco joven': 'Tacos Joven',
+        
+        # Rincón Tabasqueño - TODAS LAS VARIACIONES
+        'rincon tabasqueño': 'El Rincón Tabasqueño',
+        'rincón tabasqueño': 'El Rincón Tabasqueño',
+        
+        # 7 Quince - ADICIONALES
+        '715': '7 Quince',
+        '7:15': '7 Quince',
+        '7-15': '7 Quince',
+        '7.15': '7 Quince',
+        
+        # A Takear - ADICIONALES
+        'a taquear': 'A Takear',
+        'ataquear': 'A Takear',
+        
+        # El Edén - ADICIONALES
+        'eden': 'El Edén',
+        'edén': 'El Edén',
+        
+        # Sushi Roll - ADICIONALES
+        'sushi rol': 'Sushi Roll',
+        
+        # El Reyna - ADICIONALES
+        'reyna': 'El Reyna',
+        
+        # La Lupita - ADICIONALES
+        'lupita': 'La Lupita',
+        
+        # Salón Caimito - ADICIONALES
+        'caimito': 'Salón Caimito',
+        
+        # Domino's - ADICIONALES
+        'domino': "Domino's",
     }
     
     # Buscar coincidencia exacta

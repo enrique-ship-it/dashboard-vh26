@@ -1196,6 +1196,8 @@ def normalize_restaurant_name(name):
         'el teapaneco': 'El Teapaneco',
         'teapaneco': 'El Teapaneco',
         'el teapanecos': 'El Teapaneco',
+        'el teapeneco': 'El Teapaneco',
+        'el teqpaneco': 'El Teapaneco',
         
         # Los Tulipanes - TODAS LAS VARIACIONES
         'los tulipanes': 'Los Tulipanes',
@@ -1303,6 +1305,70 @@ def normalize_restaurant_name(name):
         
         # Domino's - ADICIONALES
         'domino': "Domino's",
+        
+        # NORMALIZACIONES ADICIONALES DE AUDITORÍA
+        # Di Bari variaciones
+        'di bary': 'Di Bari',
+        
+        # Vips variaciones
+        'vip': 'Vips',
+        'toks o vips': 'Vips',
+        
+        # Fiera variaciones
+        'fiera': 'Fiera',
+        'afiera': 'Fiera',
+        
+        # Despecho variaciones
+        'despecho': 'Despecho',
+        'barra de despecho': 'Despecho',
+        'barra del despecho': 'Despecho',
+        'la barra de despecho': 'Despecho',
+        'la barra del despecho': 'Despecho',
+        
+        # Acá Los Gordos variaciones
+        'acá los gordos': 'Acá Los Gordos',
+        'aca los gordos': 'Acá Los Gordos',
+        'acá lo gordos': 'Acá Los Gordos',
+        'aca lo gordos': 'Acá Los Gordos',
+        'los gordos': 'Acá Los Gordos',
+        
+        # A Takear variaciones adicionales
+        'atakar': 'A Takear',
+        'atekear': 'A Takear',
+        
+        # Bisquets Obregón variaciones
+        'bisquet': 'Bisquets Obregón',
+        'bisquet de obregon': 'Bisquets Obregón',
+        'bisquets de obregon': 'Bisquets Obregón',
+        'bisquets de obregón': 'Bisquets Obregón',
+        
+        # Asador Castellano variaciones
+        'asador castellano': 'Asador Castellano',
+        'asador castellanos': 'Asador Castellano',
+        
+        # 7 Quince variaciones adicionales de errores tipográficos
+        '7quinxe': '7 Quince',
+        '7quunce': '7 Quince',
+        
+        # Banquetacos variaciones adicionales
+        'baketakos': 'Banquetacos',
+        'banketaco': 'Banquetacos',
+        'banketaxos': 'Banquetacos',
+        
+        # Bravo Butchers - todas las variaciones
+        'bravo butchers': 'Bravo Butchers',
+        'bravo butcher': 'Bravo Butchers',
+        'bravo burchers': 'Bravo Butchers',
+        'bravo butched': 'Bravo Butchers',
+        'bravos butcher': 'Bravo Butchers',
+        'bravos butchers': 'Bravo Butchers',
+        
+        # Boí Rojo variaciones
+        'boy rojo': 'Boí Rojo',
+        'boli roji': 'Boí Rojo',
+        
+        # Boston's variaciones adicionales
+        'bostom': "Boston's",
     }
     
     # Buscar coincidencia exacta
@@ -1380,7 +1446,15 @@ def is_valid_restaurant_name(name):
     # Filtrar patrones de teclado aleatorio (3+ consonantes seguidas)
     if re.search(r'[bcdfghjklmnpqrstvwxyz]{3,}', lower):
         # Excepciones para nombres reales con grupos consonánticos comunes
-        exceptions = ['starbucks', 'mcdonalds', 'subway', 'schnitz', 'grill', 'express', 'fresh', 'crispy', 'brunch', 'drinks', 'extremo', 'fuego extremo']
+        exceptions = [
+            'starbucks', 'mcdonalds', 'mcdonald', 'subway', 'schnitz', 'grill', 'express', 
+            'fresh', 'crispy', 'brunch', 'drinks', 'extremo', 'fuego extremo',
+            'boston', 'bostons', "boston's", 'wings', 'bunker', 'wingstop', 'johnny',
+            'bongle', 'bongles', 'mr. bongle', 'mr bongle', 'sinaloa', 'chef',
+            'sensei', 'reyna', 'butcher', 'butchers', 'bravo', 'bravos',
+            'johnny', 'charly', 'burguer', 'burger', 'little', 'césar', 'cesar',
+            'mansion', 'mansión', 'soriana', 'bistro', 'strip', 'street'
+        ]
         if not any(exc in lower for exc in exceptions):
             return False
     

@@ -1783,7 +1783,9 @@ if selected_page == "📈 Resumen Ejecutivo":
             gmb_match = match_gmb(top_restaurant[0], df_gmb) if 'match_gmb' in dir() else None
             google_info = ""
             if gmb_match is not None:
-                google_info = f" Google lo respalda con ⭐{gmb_match['rating']}."
+                rating_val = gmb_match.get('rating') if isinstance(gmb_match, dict) else gmb_match['rating']
+                if pd.notna(rating_val):
+                    google_info = f" Google lo respalda con ⭐{rating_val}."
             
             st.markdown(f"""
             <div class="alert-success">
@@ -2202,8 +2204,22 @@ elif selected_page == "🏆 Rankings por Categoría":
                         with cols[j]:
                             gmb_match = match_gmb(name, df_gmb)
                             if gmb_match is not None:
-                                rating_text = f"⭐ {gmb_match['rating']}"
-                                reviews_text = f"{int(gmb_match['reviews']):,} reseñas"
+                                # Validar que rating y reviews sean valores numéricos válidos
+                                rating_val = gmb_match.get('rating') if isinstance(gmb_match, dict) else gmb_match['rating']
+                                reviews_val = gmb_match.get('reviews') if isinstance(gmb_match, dict) else gmb_match['reviews']
+                                
+                                if pd.notna(rating_val):
+                                    rating_text = f"⭐ {rating_val}"
+                                else:
+                                    rating_text = "Sin datos GMB"
+                                
+                                if pd.notna(reviews_val):
+                                    try:
+                                        reviews_text = f"{int(reviews_val):,} reseñas"
+                                    except (ValueError, TypeError):
+                                        reviews_text = "&nbsp;"
+                                else:
+                                    reviews_text = "&nbsp;"
                             else:
                                 rating_text = "Sin datos GMB"
                                 reviews_text = "&nbsp;"  # Espacio para mantener altura

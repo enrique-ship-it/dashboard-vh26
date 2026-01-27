@@ -1229,36 +1229,45 @@ def is_valid_restaurant_name(name):
     letters = re.findall(r"[a-záéíóúüñ]", lower)
     if not letters:
         return False
+    
     # Evitar cadenas con un solo carácter repetido
     if len(set(lower.replace(" ", ""))) == 1:
         return False
     
+    # Lista negra de patrones conocidos de basura (errores de captura)
+    garbage_patterns = [
+        'ndndn', 'dndndn', 'bsnzn', 'ekmw', 'asdf', 'qwer', 'zxcv',
+        'jkl', 'fgh', 'nnn', 'mmm', 'xxx', 'zzz', 'bbb', 'ddd',
+        'ninguno', 'ninguna', 'nada', 'nose', 'nosé', 'ns', 'na',
+        'nin guno', 'no tengo', 'no hay', 'no conozco', 'no se', 'no sé'
+    ]
+    if lower in garbage_patterns or any(p in lower for p in garbage_patterns):
+        return False
+    
     # Lista blanca de nombres cortos válidos conocidos
-    short_whitelist = {"kfc", "bk", "mcd", "mcdonalds", "leo", "toks", "vips", "ihop", "wok"}
+    short_whitelist = {"kfc", "bk", "mcd", "mcdonalds", "leo", "toks", "vips", "ihop", "wok", "qi"}
     
     # Contar vocales
     vowels = re.findall(r"[aeiouáéíóúü]", lower)
     
-    # Filtrar strings cortos sin vocales (probablemente errores de captura)
-    if len(letters) <= 4 and len(vowels) == 0 and lower not in short_whitelist:
+    # CUALQUIER string sin vocales es inválido (excepto whitelist)
+    if len(vowels) == 0 and lower not in short_whitelist:
         return False
     
-    # Filtrar strings más largos sin vocales (como "Bsnzn", "Ndndn")
-    # Un nombre real debe tener al menos 1 vocal por cada 4-5 consonantes
-    if len(letters) > 4 and len(vowels) == 0:
+    # Strings muy cortos (1-2 letras) son sospechosos
+    if len(letters) <= 2 and lower not in short_whitelist:
         return False
     
-    # Si tiene más de 3 letras pero ninguna vocal, es sospechoso
+    # Ratio consonantes/vocales - un nombre real no tiene más de 4 consonantes por vocal
     consonants = len(letters) - len(vowels)
-    if len(letters) >= 3 and vowels and consonants / len(vowels) > 5:
+    if vowels and consonants / len(vowels) > 4:
         return False
     
-    # Filtrar patrones de teclado aleatorio (muchas consonantes seguidas sin sentido)
-    # Buscar 4+ consonantes seguidas sin vocal
-    if re.search(r'[bcdfghjklmnpqrstvwxyz]{4,}', lower):
-        # Excepciones para nombres reales con grupos consonánticos
-        exceptions = ['schnitzel', 'starbucks', 'mcdonalds', 'subway']
-        if lower not in exceptions and not any(exc in lower for exc in exceptions):
+    # Filtrar patrones de teclado aleatorio (3+ consonantes seguidas)
+    if re.search(r'[bcdfghjklmnpqrstvwxyz]{3,}', lower):
+        # Excepciones para nombres reales con grupos consonánticos comunes
+        exceptions = ['starbucks', 'mcdonalds', 'subway', 'schnitz', 'grill', 'express', 'fresh', 'crispy', 'brunch', 'drinks']
+        if not any(exc in lower for exc in exceptions):
             return False
     
     return True

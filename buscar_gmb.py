@@ -1,6 +1,7 @@
 import pandas as pd
+from pathlib import Path
 
-df = pd.read_excel("/Users/enrique/Documents/Proyectos/Dashboard_VH26/data_gmb.xlsx")
+df = pd.read_excel(Path(__file__).parent / "data_gmb.xlsx")
 
 print("=== BUSCANDO RESTAURANTES ESPECÍFICOS ===\n")
 

@@ -108,11 +108,6 @@ def get_bg_image():
     if bg_path.exists():
         with open(bg_path, "rb") as f:
             return base64.b64encode(f.read()).decode()
-    # Fallback local por si existe ruta absoluta
-    bg_path_local = Path("/Users/enrique/Documents/Proyectos/NR Imagen/Fondo 4.png")
-    if bg_path_local.exists():
-        with open(bg_path_local, "rb") as f:
-            return base64.b64encode(f.read()).decode()
     # Fallback al fondo original
     bg_path_fallback = Path(__file__).parent / "assets" / "fondo1.png"
     if bg_path_fallback.exists():
@@ -1469,7 +1464,10 @@ def get_category_leaders(df):
         'Pizzas': 'Pizzas',
         'Sushi': 'Sushi',
         'Tacos': 'Tacos',
+        'Comida típica tabasqueña': 'Comida típica tabasqueña',
+        'Mexicana': 'Mexicana',
         'Desayunos': 'Desayunos',
+        'Brunch': 'Brunch',
         'Bar': 'Bar',
         'Bufete': 'Bufete',
         'Celebraciones': 'Celebraciones',
@@ -2484,7 +2482,8 @@ elif selected_page == "🔬 Análisis Detallado":
     st.caption("Explora cada categoría para entender las preferencias de los consumidores")
     
     categories = ['Mariscos', 'Carne', 'Hamburguesas', 'Pizzas', 'Sushi', 'Tacos', 
-                  'Desayunos', 'Bar', 'Bufete', 'Celebraciones']
+                  'Comida típica tabasqueña', 'Mexicana', 'Desayunos', 'Brunch',
+                  'Bar', 'Bufete', 'Está de moda', 'Ya no está de moda:', 'Celebraciones']
     
     # Usar tabs en lugar de selectbox para mejor navegación
     tabs = st.tabs(categories)
